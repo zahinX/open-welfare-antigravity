@@ -22,7 +22,7 @@ Open Welfare is a Next.js (App Router) application using Supabase as the backend
 │  • Server Components (RSC)                  │
 │  • Server Actions                           │
 │  • Route Handlers                           │
-│  • Middleware (auth session refresh)         │
+│  • Middleware (auth session refresh)        │
 └────────────────────┬────────────────────────┘
                      │ PostgREST / Auth API
 ┌────────────────────▼────────────────────────┐
