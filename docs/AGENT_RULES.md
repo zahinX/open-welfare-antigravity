@@ -8,9 +8,12 @@
 
 1. **Local-First:** All execution, testing, and database interactions run locally. No cloud deployments.
 2. **Step-by-Step Cadence:** Work on ONE sub-step at a time. Validate, test, verify with human, commit.
-3. **PM Tracking:** Update `docs/PROJECT_ROADMAP.md` after every completed sub-step.
+3. **PM Tracking & Documentation Updates:** After every completed sub-step:
+   - Update `docs/PROJECT_ROADMAP.md` status.
+   - Update `docs/DESIGN_SYSTEM.md` if new UI patterns were introduced.
+   - Update `docs/QA_CHECKLIST.md` with the manual test script and regression matrix for that step.
 4. **Automated Testing:** Write and run tests for every new piece of logic or UI component.
-5. **Git Commits:** Provide clean `git commit` commands at each verified checkpoint.
+5. **Git Commits:** Provide clean `git commit` commands at each verified checkpoint, explicitly linking to the Verification Summary.
 
 ## Human-in-the-Loop Safeguards
 
