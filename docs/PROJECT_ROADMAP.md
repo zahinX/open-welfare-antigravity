@@ -13,9 +13,9 @@
 - [x] Create `.env.example` with local placeholders — *2026-08-06*
 - [x] Populate `docs/PROJECT_ROADMAP.md` with full phase breakdown — *2026-08-06*
 
-### Step 1.2: Specification Docs Initialization
-- [ ] Populate `docs/PRD.md` with functional specs (campaigns, beneficiary logs, volunteer shifts)
-- [ ] Populate `docs/DATABASE_SCHEMA.md` with Supabase tables, fields, RLS rules
+### Step 1.2: Specification Docs Initialization ✅
+- [x] Populate `docs/PRD.md` with functional specs (campaigns, beneficiary logs, volunteer shifts) — *2026-08-06*
+- [x] Populate `docs/DATABASE_SCHEMA.md` with Supabase tables, fields, RLS rules — *2026-08-06*
 
 ### Step 1.3: Testing Suite Setup
 - [ ] Install and configure Vitest (unit/integration)
