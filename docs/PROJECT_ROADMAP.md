@@ -17,11 +17,11 @@
 - [x] Populate `docs/PRD.md` with functional specs (campaigns, beneficiary logs, volunteer shifts) — *2026-08-06*
 - [x] Populate `docs/DATABASE_SCHEMA.md` with Supabase tables, fields, RLS rules — *2026-08-06*
 
-### Step 1.3: Testing Suite Setup
-- [ ] Install and configure Vitest (unit/integration)
-- [ ] Install and configure Playwright (E2E)
-- [ ] Create `tests/unit/sanity.test.ts` — verify runner passes
-- [ ] Add `npm run test` script to `package.json`
+### Step 1.3: Testing Suite Setup ✅
+- [x] Install and configure Vitest (unit/integration) — *2026-08-06*
+- [x] Install and configure Playwright (E2E) — *2026-08-06*
+- [x] Create `tests/unit/sanity.test.ts` — verify runner passes — *2026-08-06*
+- [x] Add `npm run test` script to `package.json` — *2026-08-06*
 
 ### Step 1.4: Local Supabase CLI Setup
 - [ ] Initialize Supabase locally (`npx supabase init`)
