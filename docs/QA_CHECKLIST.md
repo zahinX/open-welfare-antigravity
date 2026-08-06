@@ -39,4 +39,14 @@ This document contains structured manual testing plans and regression matrices f
 - **Impact Matrix (Regression Check):**
   - Project configuration files (`package.json`, `vitest.config.ts`, `playwright.config.ts`).
 
+### Step 1.4: Local Supabase CLI Setup
+- **Automated Coverage:** N/A (CLI configuration and SQL schema definitions).
+- **Manual QA Script:**
+  1. Open terminal and run `npx supabase start` (requires Docker to be running).
+  2. Verify that Supabase starts successfully and the local Studio URL is printed (usually `http://127.0.0.1:54323`).
+  3. Open the Supabase Studio URL in the browser, navigate to the Table Editor, and verify that the 7 core tables (`profiles`, `campaigns`, `donations`, etc.) are created.
+  4. Verify that RLS is enabled for all tables in the Authentication/Policies section.
+- **Impact Matrix (Regression Check):**
+  - Database schema integrity.
+
 *(Future steps will be appended here as they are completed.)*

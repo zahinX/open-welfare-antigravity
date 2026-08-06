@@ -23,9 +23,9 @@
 - [x] Create `tests/unit/sanity.test.ts` — verify runner passes — *2026-08-06*
 - [x] Add `npm run test` script to `package.json` — *2026-08-06*
 
-### Step 1.4: Local Supabase CLI Setup
-- [ ] Initialize Supabase locally (`npx supabase init`)
-- [ ] Create initial migration scripts reflecting `DATABASE_SCHEMA.md`
+### Step 1.4: Local Supabase CLI Setup ✅
+- [x] Initialize Supabase locally (`npx supabase init`) — *2026-08-06*
+- [x] Create initial migration scripts reflecting `DATABASE_SCHEMA.md` — *2026-08-06*
 
 ---
 
