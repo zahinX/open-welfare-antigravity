@@ -31,11 +31,11 @@
 
 ## Phase 2 — Authentication & Core Layout
 
-### Step 2.1: Supabase Auth Integration
-- [ ] Install `@supabase/supabase-js` and `@supabase/ssr`
-- [ ] Create Supabase client utilities (browser + server)
-- [ ] Implement middleware for session management
-- [ ] Create auth callback route handler
+### Step 2.1: Supabase Auth Integration ✅
+- [x] Install `@supabase/supabase-js` and `@supabase/ssr` — *2026-08-06*
+- [x] Create Supabase client utilities (browser + server) — *2026-08-06*
+- [x] Implement proxy for session management — *2026-08-06*
+- [x] Create auth callback route handler — *2026-08-06*
 
 ### Step 2.2: Auth UI Pages
 - [ ] Build `/login` page with email/password sign-in

@@ -49,4 +49,14 @@ This document contains structured manual testing plans and regression matrices f
 - **Impact Matrix (Regression Check):**
   - Database schema integrity.
 
+### Step 2.1: Supabase Auth Integration
+- **Automated Coverage:** N/A (Server-side auth utilities; E2E tests will cover this in Auth UI steps).
+- **Manual QA Script:**
+  1. Open terminal and run `npm run build`.
+  2. Verify that the build succeeds without errors related to `@supabase/ssr` or `proxy.ts`.
+  3. Verify the Route listing output shows `ƒ Proxy (Middleware)`.
+- **Impact Matrix (Regression Check):**
+  - Next.js root request interception (middleware/proxy).
+  - API routes and Server Actions (they will now start consuming these utility clients).
+
 *(Future steps will be appended here as they are completed.)*
