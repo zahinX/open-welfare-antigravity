@@ -60,3 +60,18 @@ This document contains structured manual testing plans and regression matrices f
   - API routes and Server Actions (they will now start consuming these utility clients).
 
 *(Future steps will be appended here as they are completed.)*
+
+### Step 2.2: Auth UI Pages
+- **Automated Coverage:** Build check (`npm run build`) confirms all 3 pages compile and are registered as dynamic routes.
+- **Manual QA Script:**
+  1. Run `npm run dev` and open `http://localhost:3000/login`.
+  2. Verify the login form renders with email and password fields.
+  3. Open `http://localhost:3000/register` — verify full name, email, password fields.
+  4. Open `http://localhost:3000/forgot-password` — verify email field and submit button.
+  5. From `/login`, click "Forgot password?" — verify navigation to `/forgot-password`.
+  6. From `/login`, click "Create one" — verify navigation to `/register`.
+  7. Verify unauthenticated visit to `/dashboard` redirects to `/login` (requires Supabase running with `.env.local` set).
+- **Impact Matrix (Regression Check):**
+  - `/login`, `/register`, `/forgot-password` route registrations.
+  - Proxy redirect logic for `/dashboard` protection.
+  - `app/(auth)/actions.ts` server actions.

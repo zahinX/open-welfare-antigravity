@@ -37,11 +37,11 @@
 - [x] Implement proxy for session management — *2026-08-06*
 - [x] Create auth callback route handler — *2026-08-06*
 
-### Step 2.2: Auth UI Pages
-- [ ] Build `/login` page with email/password sign-in
-- [ ] Build `/register` page with email/password sign-up
-- [ ] Build `/forgot-password` page
-- [ ] Add auth state management and redirect logic
+### Step 2.2: Auth UI Pages ✅
+- [x] Build `/login` page with email/password sign-in — *2026-08-10*
+- [x] Build `/register` page with email/password sign-up — *2026-08-10*
+- [x] Build `/forgot-password` page — *2026-08-10*
+- [x] Add auth state management and redirect logic — *2026-08-10*
 
 ### Step 2.3: Core Application Shell
 - [ ] Build responsive sidebar/navigation layout
