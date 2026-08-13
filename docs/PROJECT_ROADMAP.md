@@ -43,11 +43,11 @@
 - [x] Build `/forgot-password` page — *2026-08-10*
 - [x] Add auth state management and redirect logic — *2026-08-10*
 
-### Step 2.3: Core Application Shell
-- [ ] Build responsive sidebar/navigation layout
-- [ ] Create dashboard shell (`/dashboard`)
-- [ ] Implement role-based nav items (Admin vs. Public)
-- [ ] Add global error boundary and loading states
+### Step 2.3: Core Application Shell ✅
+- [x] Build responsive sidebar/navigation layout — *2026-08-13*
+- [x] Create dashboard shell (`/dashboard`) — *2026-08-13*
+- [x] Implement role-based nav items (Admin vs. Public) — *2026-08-13*
+- [x] Add global error boundary and loading states — *2026-08-13*
 
 ---
 
