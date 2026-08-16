@@ -18,7 +18,10 @@ export const createCampaignSchema = z.object({
   status: campaignStatusSchema.default('draft'),
   deadline_at: z
     .string()
-    .datetime({ message: 'Deadline must be a valid ISO datetime string' })
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: 'Deadline must be a valid datetime string',
+    })
+    .transform((val) => (val ? new Date(val).toISOString() : null))
     .nullable()
     .optional(),
 })
@@ -46,7 +49,10 @@ export const updateCampaignSchema = z.object({
   status: campaignStatusSchema.optional(),
   deadline_at: z
     .string()
-    .datetime({ message: 'Deadline must be a valid ISO datetime string' })
+    .refine((val) => !val || !isNaN(Date.parse(val)), {
+      message: 'Deadline must be a valid datetime string',
+    })
+    .transform((val) => (val ? new Date(val).toISOString() : null))
     .nullable()
     .optional(),
 })

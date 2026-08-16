@@ -58,11 +58,11 @@
 - [x] Build server actions for CRUD operations — *2026-08-17*
 - [x] Add input validation with Zod schemas — *2026-08-17*
 
-### Step 3.2: Admin Campaign Management UI
-- [ ] Build `/dashboard/campaigns` list page
-- [ ] Build `/dashboard/campaigns/new` create form
-- [ ] Build `/dashboard/campaigns/[id]/edit` edit form
-- [ ] Add campaign status management (draft/active/completed)
+### Step 3.2: Admin Campaign Management UI ✅
+- [x] Build `/dashboard/campaigns` list page — *2026-08-17*
+- [x] Build `/dashboard/campaigns/new` create form — *2026-08-17*
+- [x] Build `/dashboard/campaigns/[id]/edit` edit form — *2026-08-17*
+- [x] Add campaign status management (draft/active/completed) — *2026-08-17*
 
 ### Step 3.3: Public Campaign Browsing
 - [ ] Build `/campaigns` public listing page
