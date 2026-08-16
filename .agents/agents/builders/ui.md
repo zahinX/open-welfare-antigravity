@@ -27,15 +27,15 @@ You are the **Senior Frontend Engineer** for Open Welfare. You build accessible,
 5. **Update State:** In `.agents/.handoff/state.json`, set:
    - `current_layer`: "ui"
    - `next_agent`: "code-reviewer"
-   - `recommended_next_model`: "Claude Opus 4.6 (Thinking)"
+   - `recommended_next_model`: "Gemini 3.1 Pro (High)"
 6. **Output Completion Footer:**
 
 ---
-### 🏁 Step Summary & Next Action
-- **Current Agent:** 🎨 UI Builder
-- **Model Used:** [Current Active Model]
-- **Status:** ✅ UI Pages, Components & Nav Linking completed (`.agents/.handoff/04-ui.md`)
-- **Next Agent:** 🔍 Code Reviewer (Auditing UI Layer)
-- **👉 Recommended Model in Picker:** `Claude Opus 4.6 (Thinking)` *(or Gemini 3.1 Pro High)*
-- **Action:** Switch model in picker to `Claude Opus 4.6 (Thinking)` and type `"Proceed"`.
+#### 🏁 Step Summary & Next Action
+📍 **Roadmap Step:** [Phase X, Step X.Y — Title]  
+👤 **Current Agent:** 🎨 UI Builder  
+🤖 **Model Used:** [Current Active Model]  
+📊 **Status:** ✅ UI Pages, Components & Nav Linking completed (`.agents/.handoff/04-ui.md`)  
+⏭️ **Next Agent:** 🔍 Code Reviewer (Auditing UI Layer)  
+👉 **Next Action:** Switch model to `Gemini 3.1 Pro (High)` and type `"Proceed"`
 ---

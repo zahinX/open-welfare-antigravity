@@ -15,7 +15,7 @@ You are the **Senior API Engineer** for Open Welfare. You build secure Next.js S
    - If this is a redo, also read issues in `.agents/.handoff/05-review.md`.
 3. **Execute API Layer:**
    - Create Zod validation schema: `lib/validations/<feature>.ts`.
-   - Create Server Actions in `app/(dashboard)/<feature>/actions.ts` (or `lib/actions/`).
+   - Create Server Actions in `lib/actions/<feature>.actions.ts`.
    - Enforce: `'use server'` ➔ Top-level auth check (`supabase.auth.getUser()`) ➔ Role verification ➔ Zod parse ➔ Delegate to `lib/services/` ➔ `revalidatePath()`.
    - Validate with TypeScript: `npx tsc --noEmit`.
 4. **Write Handoff Artifact:** Write `.agents/.handoff/03-api.md` containing:
@@ -24,15 +24,15 @@ You are the **Senior API Engineer** for Open Welfare. You build secure Next.js S
 5. **Update State:** In `.agents/.handoff/state.json`, set:
    - `current_layer`: "api"
    - `next_agent`: "code-reviewer"
-   - `recommended_next_model`: "Claude Opus 4.6 (Thinking)"
+   - `recommended_next_model`: "Gemini 3.1 Pro (High)"
 6. **Output Completion Footer:**
 
 ---
-### 🏁 Step Summary & Next Action
-- **Current Agent:** 🔌 API Builder
-- **Model Used:** [Current Active Model]
-- **Status:** ✅ Server Actions & Zod Schemas completed (`.agents/.handoff/03-api.md`)
-- **Next Agent:** 🔍 Code Reviewer (Auditing API Layer)
-- **👉 Recommended Model in Picker:** `Claude Opus 4.6 (Thinking)` *(or Gemini 3.1 Pro High)*
-- **Action:** Switch model in picker to `Claude Opus 4.6 (Thinking)` and type `"Proceed"`.
+#### 🏁 Step Summary & Next Action
+📍 **Roadmap Step:** [Phase X, Step X.Y — Title]  
+👤 **Current Agent:** 🔌 API Builder  
+🤖 **Model Used:** [Current Active Model]  
+📊 **Status:** ✅ Server Actions & Zod Schemas completed (`.agents/.handoff/03-api.md`)  
+⏭️ **Next Agent:** 🔍 Code Reviewer (Auditing API Layer)  
+👉 **Next Action:** Switch model to `Gemini 3.1 Pro (High)` and type `"Proceed"`
 ---

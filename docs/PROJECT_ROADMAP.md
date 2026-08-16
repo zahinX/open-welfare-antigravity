@@ -53,10 +53,10 @@
 
 ## Phase 3 — Campaign Management (Public Donations)
 
-### Step 3.1: Campaign Database Schema & API
-- [ ] Create `campaigns` table migration with RLS
-- [ ] Build server actions for CRUD operations
-- [ ] Add input validation with Zod schemas
+### Step 3.1: Campaign Database Schema & API ✅
+- [x] Create `campaigns` table migration with RLS — *2026-08-17*
+- [x] Build server actions for CRUD operations — *2026-08-17*
+- [x] Add input validation with Zod schemas — *2026-08-17*
 
 ### Step 3.2: Admin Campaign Management UI
 - [ ] Build `/dashboard/campaigns` list page
