@@ -75,3 +75,41 @@ This document contains structured manual testing plans and regression matrices f
   - `/login`, `/register`, `/forgot-password` route registrations.
   - Proxy redirect logic for `/dashboard` protection.
   - `app/(auth)/actions.ts` server actions.
+
+### Step 2.3: Core Application Shell
+- **Automated Coverage:** Build check (`npm run build`) confirms `/dashboard` routes and layout compile.
+- **Manual QA Script:**
+  1. Log in as an admin user and navigate to `/dashboard`.
+  2. Verify the sidebar renders with role-specific navigation links.
+  3. Verify the sign out action correctly terminates the session and redirects to `/login`.
+- **Impact Matrix (Regression Check):**
+  - `app/dashboard/layout.tsx`
+  - `components/dashboard/Sidebar.tsx`
+
+---
+
+## 📋 Phase 3: Campaign Management (Public Donations)
+
+### Step 3.1: Campaign Database Schema & API
+- **Automated Coverage:** Schema migrations verified, Zod input validation schemas unit-tested.
+- **Manual QA Script:**
+  1. Verify Supabase tables for `campaigns` exist with appropriate columns and RLS policies.
+  2. Verify server actions (`createCampaignAction`, `updateCampaignAction`, `deleteCampaignAction`) execute successfully with proper admin permission checks.
+- **Impact Matrix (Regression Check):**
+  - `lib/services/campaign.ts`
+  - `lib/actions/campaign.actions.ts`
+  - `lib/validations/campaign.ts`
+
+### Step 3.2: Admin Campaign Management UI
+- **Automated Coverage:** `tests/unit/campaign-ui.test.tsx` testing Campaign list, creation, editing, and deletion interactions.
+- **Manual QA Script:**
+  1. Navigate to `/dashboard/campaigns` as an admin.
+  2. Click "New Campaign" to navigate to `/dashboard/campaigns/new`.
+  3. Fill out the campaign form (Title, Description, Target Amount, Status, Deadline) and click "Create Campaign".
+  4. Verify the new campaign appears in the list on `/dashboard/campaigns`.
+  5. Click "Edit" on a campaign, change its title or status, and verify the updates persist.
+  6. Click "Delete" on a campaign and confirm deletion removes it from the table.
+- **Impact Matrix (Regression Check):**
+  - `app/dashboard/campaigns/**`
+  - `components/dashboard/campaigns/CampaignForm.tsx`
+  - `components/dashboard/campaigns/DeleteCampaignButton.tsx`
