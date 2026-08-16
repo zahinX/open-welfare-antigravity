@@ -2,89 +2,46 @@
 name: orchestrator
 description: >-
   Use this skill to act as the project Orchestrator when implementing a new
-  feature or roadmap step. It governs the full agent pipeline: decomposing work
-  into layers, spawning the Plan Reviewer, sequentially running Builder agents
-  through the Code Reviewer loop, running the Test Builder, and finalizing with
-  the Docs Agent. See docs/AGENT_PIPELINE.md for the full architecture.
+  feature or roadmap step. It manages the modular multi-model pipeline: creating
+  the ephemeral handoff workspace (.agents/.handoff/), decomposing features into
+  layers, guiding model picker selections, and coordinating the review gates.
 ---
 
 # Orchestrator
 
-You are the **Project Orchestrator**. You manage the full agent pipeline for a feature. You do NOT write code yourself — you decompose, delegate, and manage retry loops.
+You are the **Project Orchestrator**. You manage the multi-model agent pipeline for Open Welfare.
 
 ## Reference
+Full pipeline architecture: `docs/AGENT_PIPELINE.md`
 
-Full architecture: `docs/AGENT_PIPELINE.md`  
-Model tier assignments are defined there. Always use the specified model for each agent.
+## Zero-Instruction Handoff Flow
 
-## Pipeline Steps
+When the user initiates a step (e.g. `"Start Phase 3, Step 3.1"`):
+1. **Initialize State:** Create `.agents/.handoff/state.json` with the active phase, step, current layer (`planning`), and next agent (`plan-reviewer`).
+2. **Decompose Feature:** Produce `.agents/.handoff/00-plan.md` dividing the work into:
+   - Database: tables, columns, RLS policies
+   - Backend: service functions, error strategies
+   - API: server actions, Zod schemas, cache invalidations
+   - UI: routes, RSC components, mandatory navigation linking
+   - Tests: unit, integration, and E2E coverage
+3. **Set Next Agent:** Update `state.json` with `next_agent: "plan-reviewer"` and `recommended_next_model: "Gemini 3.1 Pro (High)"`.
+4. **Output Standard Completion Footer:**
+   ```markdown
+   ---
+   ### 🏁 Step Summary & Next Action
+   - **Current Agent:** 🧠 Orchestrator
+   - **Model Used:** [Active Model]
+   - **Status:** ✅ Plan initialized (`.agents/.handoff/00-plan.md`)
+   - **Next Agent:** 📋 Plan Reviewer
+   - **👉 Recommended Model in Picker:** `Gemini 3.1 Pro (High)`
+   - **Action:** Leave or switch model to `Gemini 3.1 Pro (High)` and type `"Proceed"`.
+   ---
+   ```
 
-### Step 0 — Analyze
-1. Read the relevant section of `docs/PROJECT_ROADMAP.md` for the requested step
-2. Read `docs/PRD.md` for functional requirements
-3. Read `docs/DATABASE_SCHEMA.md` for existing schema context
-4. Identify all four layers that need work: **DB → Backend → API → UI**
-
-### Step 1 — Decompose & Plan
-Produce a plan artifact containing:
-- DB: table names, columns, RLS policies needed
-- Backend: service file paths, function signatures
-- API: action names, Zod schemas needed, revalidation paths
-- UI: page routes, component names, nav links to update
-
-### Step 2 — Plan Review Gate
-Spawn the **Plan Reviewer** agent (`skills/plan-review`).  
-**Model: Gemini 3.1 Pro (High)**
-
-- If `status: "rejected"` → revise the plan and re-spawn Plan Reviewer (max 2 cycles)
-- If `status: "approved"` → carry forward any warnings to the Builder agents
-
-### Step 3 — Build → Review Loop
-For each layer in order [DB, Backend, API, UI]:
-
-1. Spawn the **Builder** agent for that layer with:
-   - The feature spec
-   - Your approved plan for that layer
-   - Any warnings from the Plan Reviewer
-   - The output contract (what files to produce + report format)
-
-2. Spawn the **Code Reviewer** agent (`skills/code-review`).  
-   **Model: Claude Opus 4.6**
-
-3. If `status: "rejected"`:
-   - Re-spawn the Builder with the rejection `issues` list
-   - Increment retry counter
-   - If retry counter reaches 3 → **STOP. Report to human.**
-
-4. If `status: "approved"` → proceed to the next layer
-
-### Step 4 — Test Gate
-Spawn the **Test Builder** agent (`skills/test`).  
-**Model: Gemini Flash 3.7 (High)**
-
-- Provide the full manifest of all files created in Step 3
-- If `status: "fail"`:
-  - For each failure, identify `broken_layer`
-  - Re-run the Build → Review Loop for only that layer (with the test failure as additional context)
-  - Re-spawn Test Builder
-  - Max 3 full test cycles before escalating to human
-
-### Step 5 — Docs
-Spawn the **Docs Agent** (`skills/docs`).  
-**Model: Gemini 3.1 Flash**
-
-- Provide: feature name, file manifest, test summary
-- Collect the prepared git commit message
-
-### Step 6 — Commit
-Present the git commit message to the human for review, then run:
-```bash
-git add .
-git commit -m "<commit message from Docs Agent>"
-```
-
-## Token Efficiency Rules
-
-- Pass only the **minimum context** each sub-agent needs — do not dump entire codebases
-- Clear file contents from your context before moving to the next layer
-- The plan artifact is the source of truth; reference it rather than re-explaining
+## Managing Later Steps
+When the user simply types `"Proceed"` in any subsequent turn:
+- Read `.agents/.handoff/state.json`.
+- Identify the `next_agent`.
+- If the current model does not match `recommended_next_model`, output the friendly notice banner.
+- Read the previous agent's output artifact from `.agents/.handoff/`.
+- Execute that specific agent's instructions, write the new artifact, update `state.json`, and output the new Completion Footer.

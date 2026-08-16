@@ -1,176 +1,120 @@
 # Agent Pipeline Architecture
 
 > **Status:** Active  
-> **Version:** 1.0.0  
-> **Last Updated:** 2026-08-16
+> **Version:** 2.0.0  
+> **Last Updated:** 2026-08-17
 
-This document defines the multi-agent pipeline used to develop every feature in Open Welfare. It establishes agent roles, model tier assignments, folder structure conventions, and the review-retry loop protocol.
-
----
-
-## Model Tier Assignments
-
-| Tier | Purpose | Models |
-|---|---|---|
-| **Tier 1 — Reasoning** | Planning, architecture, deep review | Gemini 3.1 Pro (High) · Claude Opus 4.6 |
-| **Tier 2 — Implementation** | Code generation, pattern-following | Claude Sonnet 4.6 · Gemini Flash 3.7 (High) |
-| **Tier 3 — Utility** | Markdown, docs, simple edits | Gemini Flash 3.7 (Medium) |
+This document defines the modular, multi-model agent pipeline for Open Welfare. It is optimized for zero-overhead token usage, human-in-the-loop phase reviews, and autonomous review-redo loops.
 
 ---
 
-## Agent Roster
+## 1. Multi-Model Tier Strategy
 
-| # | Agent | Tier | Model | Why This Model |
-|---|---|---|---|---|
-| 0 | 🧠 **Orchestrator** (main) | 1 | Gemini 3.1 Pro (High) | Reasoning-heavy: decompose features, manage retry state, cross-layer decisions |
-| 1 | 📋 **Plan Reviewer** | 1 | Gemini 3.1 Pro (High) | Architectural reasoning: RLS gaps, schema ↔ PRD alignment, edge case detection |
-| 2 | 🔍 **Code Reviewer** | 1 | Claude Opus 4.6 | Deep code inspection: precise line-level rejection with structured feedback |
-| 3 | 🗄️ **DB Builder** | 2 | Claude Sonnet 4.6 | Best-in-class structured SQL generation, RLS policy writing |
-| 4 | ⚙️ **Backend Builder** | 2 | Claude Sonnet 4.6 | TypeScript service files — code precision matters |
-| 5 | 🔌 **API Builder** | 2 | Gemini Flash 3.7 (High) | Zod schemas + server actions — fast, pattern-following, high throughput |
-| 6 | 🎨 **UI Builder** | 2 | Claude Sonnet 4.6 | React/Tailwind component generation — Claude excels at UI precision |
-| 7 | 🧪 **Test Builder** | 2 | Gemini Flash 3.7 (High) | Large context window + fast; reads all created files, writes Vitest/Playwright |
-| 8 | 📝 **Docs Agent** | 3 | Gemini Flash 3.7 (Medium) | Markdown-only task — lowest cost tier is more than sufficient |
-
-> **Gemini Flash 3.7 High** is slotted for API Builder and Test Builder — tasks that are pattern-following but require reading larger file contexts. Its high reasoning setting + speed make it the most cost-efficient choice here.
-
----
-
-## Pipeline Flow
-
-```
-User Request
-      │
-      ▼
-┌─────────────────────────────────────┐
-│  🧠 Orchestrator  [Gemini Pro High]  │  Reads roadmap step → decomposes into layer tasks
-└──────────┬──────────────────────────┘
-           │ plan artifact
-           ▼
-┌─────────────────────────────────────┐
-│  📋 Plan Reviewer [Gemini Pro High]  │  Checks completeness, RLS, nav linking, PRD alignment
-└──────────┬──────────────────────────┘
-           │ approved / rejected → Orchestrator revises
-           ▼
- ┌─────────────────────────────────────────────────────────────┐
- │                     BUILD → REVIEW LOOP                      │
- │                                                              │
- │  For each layer  [DB → Backend → API → UI]:                  │
- │                                                              │
- │  ┌──────────────────────┐   ┌───────────────────────────┐   │
- │  │ 🔨 Builder  [Tier 2]  │──▶│ 🔍 Code Reviewer [Opus 4.6]│  │
- │  │                      │◀──│                           │   │
- │  └──────────────────────┘   └───────────────────────────┘   │
- │        │   fix + resubmit (max 3x)        │ approved         │
- │        ▼                                  ▼                  │
- │   STOP → ask human                   Next layer              │
- └─────────────────────────────────────────────────────────────┘
-           │ all layers built + approved
-           ▼
-┌──────────────────────────────────────┐
-│  🧪 Test Builder [Flash 3.7 High]     │  Writes unit/integration/e2e, runs tests
-└──────────┬───────────────────────────┘
-           │ fail → Orchestrator re-spawns broken layer's Builder + Code Reviewer
-           │ pass ↓
-           ▼
-┌──────────────────────────────────────┐
-│  📝 Docs Agent    [Gemini Flash]      │  Updates Roadmap, QA Checklist, Design System
-└──────────┬───────────────────────────┘
-           ▼
-     ✅ Feature Complete + git commit ready
-```
-
----
-
-## Review Protocol
-
-### Plan Reviewer checks for:
-- Missing RLS policies in DB tasks
-- Zod validation gaps in API tasks
-- Orphaned routes (UI built but not linked in nav)
-- Schema ↔ PRD alignment
-
-### Code Reviewer checks for:
-- **DB:** RLS on every table, `snake_case`, migration idempotency
-- **Backend:** Error handling (no raw Supabase errors leaked), typed I/O
-- **API:** Zod validation present, auth check at top, `revalidatePath()` called
-- **UI:** Server Component default, `'use client'` only when needed, a11y, nav linking
-
-### Rejection format:
-```json
-{
-  "status": "rejected",
-  "issues": [
-    { "file": "...", "line": 0, "severity": "error|warning", "message": "...", "suggestion": "..." }
-  ]
-}
-```
-
-### Retry Protocol:
-- Each builder gets **max 3 round-trips** with the Code Reviewer per layer
-- If still failing after 3 attempts → **STOP and report to human** (per existing 3-Attempt Rule)
-- If Test Builder fails → Orchestrator identifies broken layer and re-spawns only that Builder + Code Reviewer
-
----
-
-## Folder Structure
-
-```
-.agents/
-├── skills/                        # How-to instructions for the main agent
-│   ├── orchestrator/SKILL.md
-│   ├── database/SKILL.md
-│   ├── backend/SKILL.md
-│   ├── api/SKILL.md
-│   ├── ui/SKILL.md
-│   ├── plan-review/SKILL.md
-│   ├── code-review/SKILL.md
-│   ├── test/SKILL.md
-│   └── docs/SKILL.md
-│
-└── agents/                        # Self-contained prompt templates for sub-agents
-    ├── README.md
-    ├── orchestrator.md
-    ├── plan-reviewer.md
-    ├── code-reviewer.md
-    ├── builders/
-    │   ├── db.md
-    │   ├── backend.md
-    │   ├── api.md
-    │   └── ui.md
-    ├── test.md
-    └── docs.md
-```
-
-### Folder Semantics
-
-| Folder | Contains | Purpose |
-|---|---|---|
-| `skills/` | `SKILL.md` files | **How** — instructions the *main agent* reads to guide its own behavior |
-| `agents/` | `.md` prompt templates | **Who** — self-contained prompts the Orchestrator hands verbatim to sub-agents |
-
-### IDE Compatibility
-
-| IDE | `skills/` usage | `agents/` usage |
-|---|---|---|
-| **Antigravity** | Auto-discovered, progressive disclosure | Referenced by orchestrator skill |
-| **Cursor / Windsurf** | Manual reference | Scoped prompt files / rule documents |
-| **Claude Code** | Manual reference | Slash commands or subagent prompts |
-
----
-
-## Token Cost Estimate Per Feature
-
-| Agent | Model | Est. Tokens | Spawns |
+| Tier | Role / Phase | Recommended Model | Why This Model |
 |---|---|---|---|
-| Orchestrator | Gemini 3.1 Pro High | ~2K | 1 |
-| Plan Reviewer | Gemini 3.1 Pro High | ~3K | 1 |
-| DB Builder | Claude Sonnet 4.6 | ~4K | 1–3 |
-| Backend Builder | Claude Sonnet 4.6 | ~5K | 1–3 |
-| API Builder | Gemini Flash 3.7 High | ~3K | 1–3 |
-| UI Builder | Claude Sonnet 4.6 | ~6K | 1–3 |
-| Code Reviewer | Claude Opus 4.6 | ~3K | 4× (one per layer) |
-| Test Builder | Gemini Flash 3.7 High | ~4K | 1–2 |
-| Docs Agent | Gemini Flash 3.7 Medium | ~1K | 1 |
-| **Happy path total** | | **~31K** | **11** |
-| **Worst case (3× retries)** | | **~60K** | **25** |
+| **Tier 1 (Reasoning)** | 🧠 Orchestrator & 📋 Plan Reviewer | **Gemini 3.1 Pro (High)** | High-level system architecture, PRD ↔ Schema alignment, deep decomposition |
+| **Tier 1 (Reasoning)** | 🔍 Code Reviewer | **Claude Opus 4.6** *(or Gemini 3.1 Pro High)* | Deep line-level code audit, structural edge-case detection |
+| **Tier 2 (Building)** | 🗄️ DB Builder | **Claude Sonnet 4.6** | Robust PostgreSQL DDL & RLS security policy syntax |
+| **Tier 2 (Building)** | ⚙️ Backend Builder | **Claude Sonnet 4.6** | Typed TypeScript service layer, error encapsulation |
+| **Tier 2 (Building)** | 🔌 API Builder | **Gemini Flash 3.7 (High)** | Fast, pattern-following Zod validation & Next.js Server Actions |
+| **Tier 2 (Building)** | 🎨 UI Builder | **Claude Sonnet 4.6** | RSC-first architecture, Tailwind CSS, clean accessibility |
+| **Tier 2 (Building)** | 🧪 Test Builder | **Gemini Flash 3.7 (High)** | Massive context capacity to ingest all layer files and write Vitest + Playwright suites |
+| **Tier 3 (Utility)** | 📝 Docs & Git Agent | **Gemini Flash 3.7 (Medium)** | Low-cost markdown updates, git commit/push generation, cleanup |
+
+---
+
+## 2. The Interactive Pipeline Lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as 👤 Human
+    participant Orch as 🧠 Orchestrator [Gemini Pro High]
+    participant Plan as 📋 Plan Reviewer [Gemini Pro High]
+    participant DB as 🗄️ DB Builder [Claude Sonnet 4.6]
+    participant Backend as ⚙️ Backend Builder [Claude Sonnet 4.6]
+    participant API as 🔌 API Builder [Flash 3.7 High]
+    participant UI as 🎨 UI Builder [Claude Sonnet 4.6]
+    participant Review as 🔍 Code Reviewer [Claude Opus 4.6]
+    participant Test as 🧪 Test Builder [Flash 3.7 High]
+    participant Docs as 📝 Docs Agent [Flash 3.7 Med]
+
+    User->>Orch: "Start Phase 3, Step 3.1"
+    Orch->>Plan: Decomposes into layer plan
+    Plan->>Plan: Audits plan (RLS, routes, schemas)
+    Plan-->>User: Outputs Step Summary + Next Model Banner ("Claude Sonnet 4.6")
+    
+    rect rgb(240, 245, 255)
+    Note over User,Review: Layer Build & Review Loop
+    User->>DB: Selects Model -> Types "Proceed"
+    DB-->>User: Writes DB -> Banner ("Claude Opus 4.6")
+    User->>Review: Selects Model -> Types "Proceed"
+    Review-->>User: Approved -> Banner ("Claude Sonnet 4.6 for Backend")
+    Note over User,Review: (Repeats for Backend, API, UI)
+    end
+
+    User->>Test: Selects Model -> Types "Proceed"
+    Test-->>User: Runs unit/integration/E2E -> Banner ("Gemini Flash 3.7 Med")
+
+    User->>Docs: Selects Model -> Types "Proceed"
+    Docs-->>User: 🛑 Phase Complete: Asks Human to Review & offers Git Push
+    User->>Docs: "Approved, Push Changes"
+    Docs->>Docs: Updates Docs, Cleans .agents/.handoff/, Runs Git Commit & Push
+```
+
+---
+
+## 3. Core Protocols & Rules
+
+### A. Ephemeral Handoff Protocol (`.agents/.handoff/`)
+To prevent token bloat across chat sessions and avoid long-term git clutter:
+1. All inter-agent data is saved inside `.agents/.handoff/`:
+   - `state.json` (tracks active phase, current layer, next pending agent, recommended model)
+   - `00-plan.md`, `01-db.md`, `02-backend.md`, `03-api.md`, `04-ui.md`, `05-review.md`, `06-test.md`
+2. `.agents/.handoff/` is listed in `.gitignore` so temporary files are never pushed.
+3. Upon final phase approval, the **Docs Agent automatically purges `.agents/.handoff/`** to keep the workspace completely clean.
+
+### B. Zero-Instruction Prompting ("Just Say Proceed")
+The human is **never required** to re-explain the task or pass file paths between agents.
+* Every agent checks `.agents/.handoff/state.json` on startup.
+* When the human selects the recommended model and simply prompts `"Proceed"` (or `"Next"`), the active agent autonomously reads the previous stage's handoff file and executes.
+
+### C. Standard Completion Footer (Required on Every Agent Turn)
+Every agent MUST conclude its output with this exact standardized banner:
+
+```markdown
+---
+### 🏁 Step Summary & Next Action
+- **Current Agent:** [e.g., 🗄️ DB Builder]
+- **Model Used:** [Current Active Model]
+- **Status:** ✅ Completed / ⚠️ Redo Requested
+- **Next Agent:** [e.g., 🔍 Code Reviewer]
+- **👉 Recommended Model in Picker:** `[e.g., Claude Opus 4.6 (Thinking)]`
+- **Action:** Switch the model in your picker and type `"Proceed"`.
+---
+```
+
+### D. Model Mismatch Detection
+If the active model does not match the recommended model for an agent, the agent must output a friendly notice before executing:
+> ⚠️ **Model Notice:** Recommended model for this task is `[Recommended Model]`, but currently running on `[Active Model]`. Proceeding with current model.
+
+### E. Reviewer Rejection & Redo Protocol
+Reviewer agents (Plan Reviewer, Code Reviewer, Test Builder) are strict quality gates:
+1. If code or architecture is flawed, the Reviewer rejects it and writes exact issue descriptions and suggestions to `.agents/.handoff/`.
+2. The Reviewer explicitly alerts the human:
+   > 🛑 **Revision Required for [Layer]**: [Reason]  
+   > 👉 **Please select `[Builder Model]` and type `"Proceed"` to redo this step.**
+3. The Builder reads the feedback, fixes the implementation, and re-submits to the Reviewer (up to 3 cycles).
+
+### F. Human Phase Review & Automated Git Commit
+Human review takes place **at the end of the entire phase**:
+1. After all tests pass, the **Docs Agent** presents a comprehensive summary of everything built and tested.
+2. It explicitly prompts:
+   > 🔍 **Phase [X] is fully implemented and tested. Please verify if everything works as expected.**  
+   > If satisfied, type **"Approve and Push"** to commit and push changes.
+3. When approved, it updates the roadmap, cleans up `.agents/.handoff/`, generates a clean commit message, and executes:
+   ```bash
+   git add .
+   git commit -m "feat(<scope>): <description>"
+   git push
+   ```
