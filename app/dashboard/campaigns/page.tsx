@@ -128,6 +128,13 @@ export default async function CampaignsPage() {
                       <td className="px-5 py-4">
                         <div className="flex items-center justify-end gap-4">
                           <Link
+                            href={`/campaigns/${campaign.id}`}
+                            target="_blank"
+                            className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                          >
+                            View
+                          </Link>
+                          <Link
                             href={`/dashboard/campaigns/${campaign.id}/edit`}
                             className="text-xs font-medium text-zinc-400 hover:text-white transition-colors"
                           >

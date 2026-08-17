@@ -165,6 +165,7 @@ export type Database = {
           assessment_notes: string | null
           status: 'pending' | 'approved' | 'rejected' | 'inactive'
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
@@ -175,6 +176,7 @@ export type Database = {
           assessment_notes?: string | null
           status?: 'pending' | 'approved' | 'rejected' | 'inactive'
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
@@ -185,6 +187,7 @@ export type Database = {
           assessment_notes?: string | null
           status?: 'pending' | 'approved' | 'rejected' | 'inactive'
           created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -197,6 +200,7 @@ export type Database = {
           description: string
           disbursed_at: string
           logged_by: string
+          created_at: string
         }
         Insert: {
           id?: string
@@ -206,6 +210,7 @@ export type Database = {
           description: string
           disbursed_at?: string
           logged_by: string
+          created_at?: string
         }
         Update: {
           id?: string
@@ -215,6 +220,7 @@ export type Database = {
           description?: string
           disbursed_at?: string
           logged_by?: string
+          created_at?: string
         }
         Relationships: [
           {
@@ -359,11 +365,13 @@ export type DonationUpdate = Database['public']['Tables']['donations']['Update']
 // Convenience type aliases for beneficiaries
 export type Beneficiary = Database['public']['Tables']['beneficiaries']['Row']
 export type BeneficiaryInsert = Database['public']['Tables']['beneficiaries']['Insert']
+export type BeneficiaryUpdate = Database['public']['Tables']['beneficiaries']['Update']
 export type BeneficiaryStatus = Database['public']['Enums']['beneficiary_status']
 
 // Convenience type aliases for disbursements
 export type Disbursement = Database['public']['Tables']['disbursements']['Row']
 export type DisbursementInsert = Database['public']['Tables']['disbursements']['Insert']
+export type DisbursementUpdate = Database['public']['Tables']['disbursements']['Update']
 
 // Convenience type aliases for volunteer_shifts
 export type VolunteerShift = Database['public']['Tables']['volunteer_shifts']['Row']
