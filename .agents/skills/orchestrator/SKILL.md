@@ -16,25 +16,25 @@ Full pipeline architecture: `docs/AGENT_PIPELINE.md`
 
 ## Zero-Instruction Handoff Flow
 
-When the user initiates a step (e.g. `"Start Phase 3, Step 3.1"`):
-1. **Initialize State:** Create `.agents/.handoff/state.json` with the active phase, step, current layer (`planning`), and next agent (`plan-reviewer`).
-2. **Decompose Feature:** Produce `.agents/.handoff/00-plan.md` dividing the work into:
-   - Database: tables, columns, RLS policies
-   - Backend: service functions, error strategies
-   - API: server actions, Zod schemas, cache invalidations
-   - UI: routes, RSC components, mandatory navigation linking
-   - Tests: unit, integration, and E2E coverage
-3. **Set Next Agent:** Update `state.json` with `next_agent: "plan-reviewer"` and `recommended_next_model: "Gemini 3.1 Pro (High)"`.
-4. **Output Standard Completion Footer:**
+When the user initiates a phase or batch (e.g. `"Start Phase 4"`):
+1. **Scope the Batch (<70% Context Rule):** Analyze the phase. If the entire phase fits within 70% of the models' context window, batch it as one horizontal run. Otherwise, divide it into sub-batches.
+2. **Initialize State:** Create `.agents/.handoff/state.json` with the active phase, batch name, current layer (`planning`), and next agent (`plan-reviewer`).
+3. **Decompose Feature (Horizontal Layering):** Produce `.agents/.handoff/00-plan.md` dividing the work so that one model can do as much as possible at once:
+   - **Core Build (Flash 3.7):** All Database, Backend, API, and Tests for the batch.
+   - **Core Review (Gemini Pro):** Unified review of the Core Build.
+   - **UI Build & Review (Claude):** All UI routes, components, and UI review.
+4. **Set Next Agent:** Update `state.json` with `next_agent: "plan-reviewer"` and `recommended_next_model: "Claude Opus 4.6 (Thinking)"`.
+5. **Output Standard Completion Footer:**
    ```markdown
    ---
-   ### 🏁 Step Summary & Next Action
-   - **Current Agent:** 🧠 Orchestrator
-   - **Model Used:** [Active Model]
-   - **Status:** ✅ Plan initialized (`.agents/.handoff/00-plan.md`)
-   - **Next Agent:** 📋 Plan Reviewer
-   - **👉 Recommended Model in Picker:** `Gemini 3.1 Pro (High)`
-   - **Action:** Leave or switch model to `Gemini 3.1 Pro (High)` and type `"Proceed"`.
+   #### 🏁 Step Summary & Next Action
+   📍 **Phase/Batch:** [e.g. Phase 4 — Beneficiary Core Batch 1]
+   👤 **Current Agent:** 🧠 Orchestrator
+   🤖 **Model Used:** [Active Model]
+   📈 **Context Estimate:** [e.g. ~45% (Safe)]
+   📊 **Status:** ✅ Plan initialized (`.agents/.handoff/00-plan.md`)
+   ⏭️ **Next Agent:** 📋 Plan Reviewer
+   👉 **Next Action:** Switch model to `Claude Opus 4.6 (Thinking)` and type `"Proceed"`
    ---
    ```
 

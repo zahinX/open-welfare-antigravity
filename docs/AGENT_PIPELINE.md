@@ -1,41 +1,49 @@
 # Agent Pipeline Architecture
 
 > **Status:** Active  
-> **Version:** 2.2.4 (Roadmap Step Indicator & Quota-Optimized)  
+> **Version:** 3.0.0 (Horizontal Layer Batching & Context-Optimized)  
 > **Last Updated:** 2026-08-17
 
-This document defines the modular, multi-model agent pipeline for Open Welfare. It is optimized for zero-overhead token usage, preservation of Claude weekly quotas by leveraging **Gemini Flash 3.7 High** for heavy building tasks, and surgical use of **Claude Opus 4.6** and **Claude Sonnet 4.6** for architectural planning and UI fidelity.
+This document defines the modular, multi-model agent pipeline for Open Welfare. It has been optimized to **minimize model switching** by horizontally batching tasks by layer, while strictly maintaining a **<70% context window limit** to ensure high reasoning quality.
 
 ---
 
-## 1. Multi-Model Tier Strategy (Quota-Optimized)
+## 1. Multi-Model Tier Strategy & Batching Rules
+
+### Context Limit Rule
+The Orchestrator must scope work into phase-wide batches (or sub-batches) ensuring that the executing model's context window will **not exceed 70%**. If a phase is too large, it must be split into multiple horizontal batches.
+
+### Model Consolidation & Handoff Rule
+To minimize switching:
+1. **Gemini Flash 3.7 (High)** handles as much building as possible (DB, Backend, API, Tests) in one continuous session, up to its 70% context limit.
+2. **Gemini 3.1 Pro (High)** performs the Code Review for all of Flash 3.7's work, making necessary corrections directly. 
+3. **Claude Sonnet 4.6** is then handed the baton to build and review the UI layer. 
+*Handoffs must explicitly summarize context before the model switch clears the context window.*
 
 | Tier | Role / Phase | Recommended Model | Why This Model |
 |---|---|---|---|
-| **Tier 1 (Reasoning)** | 🧠 Orchestrator | **Gemini 3.1 Pro (High)** | Deep system architecture, PRD ↔ Schema alignment, layer decomposition (Google AI Pro) |
-| **Tier 1 (Reasoning)** | 📋 Plan Reviewer | **Claude Opus 4.6 (Thinking)** | **Surgical Claude spot:** Cross-vendor audit of Gemini's architectural plan (~2K tokens only) |
-| **Tier 1 (Reasoning)** | 🔍 Code Reviewer | **Gemini 3.1 Pro (High)** | High-reasoning code audit, catches edge cases without burning Claude limits |
-| **Tier 2 (Building)** | 🗄️ DB Builder | **Gemini Flash 3.7 (High)** | Fast, precise PostgreSQL DDL & Supabase RLS policies (0 Claude quota) |
-| **Tier 2 (Building)** | ⚙️ Backend Builder | **Gemini Flash 3.7 (High)** | Clean TypeScript service layer, error encapsulation (0 Claude quota) |
-| **Tier 2 (Building)** | 🔌 API Builder | **Gemini Flash 3.7 (High)** | Pattern-following Zod validation & Next.js Server Actions (0 Claude quota) |
-| **Tier 2 (Building)** | 🎨 UI Builder | **Claude Sonnet 4.6 (Thinking)** | React Server Components, Tailwind CSS, clean design precision |
-| **Tier 2 (Building)** | 🧪 Test Builder | **Gemini Flash 3.7 (High)** | Massive context capacity to ingest all layer files and write Vitest + Playwright suites |
-| **Tier 3 (Utility)** | 📝 Docs & Git Agent | **Gemini Flash 3.7 (Medium)** | Low-cost markdown updates, git commit/push generation, cleanup |
+| **Tier 1 (Reasoning)** | 🧠 Orchestrator | **Gemini 3.1 Pro (High)** | Scopes tasks to <70% context, plans horizontal layer batches. |
+| **Tier 1 (Reasoning)** | 📋 Plan Reviewer | **Claude Opus 4.6 (Thinking)** | Cross-vendor audit of the architectural plan. |
+| **Tier 2 (Building)** | 🏗️ Core Builder | **Gemini Flash 3.7 (High)** | Builds DB, Backend, API, and Tests in a single batched run. |
+| **Tier 1 (Reviewing)** | 🔍 Core Reviewer | **Gemini 3.1 Pro (High)** | Reviews all Core Builder work and makes fixes before UI handoff. |
+| **Tier 2 (Building/UI)** | 🎨 UI Builder & Reviewer | **Claude Sonnet 4.6 (Thinking)** | Builds and reviews UI components, React Server Components, Tailwind. |
+| **Tier 3 (Utility)** | 📝 Docs & Git Agent | **Gemini Flash 3.7 (Medium)** | Low-cost markdown updates, git commit/push generation, cleanup. |
 
 ---
 
 ## 2. Standard Completion Footer Format
 
-Every agent MUST conclude its output with this exact format (including the Roadmap Step indicator):
+Every agent MUST conclude its output with this exact format (including the Roadmap Step indicator and Context check):
 
 ```markdown
 ---
 #### 🏁 Step Summary & Next Action
-📍 **Roadmap Step:** [e.g. Phase 3, Step 3.1 — Campaign Database Schema & API]  
-👤 **Current Agent:** [e.g. ⚙️ Backend Builder]  
+📍 **Phase/Batch:** [e.g. Phase 4 — Beneficiary Core Batch 1]  
+👤 **Current Agent:** [e.g. 🏗️ Core Builder]  
 🤖 **Model Used:** [Current Active Model]  
+📈 **Context Estimate:** [e.g. ~45% (Safe)]  
 📊 **Status:** ✅ [Summary of completed step]  
-⏭️ **Next Agent:** [e.g. 🔍 Code Reviewer]  
+⏭️ **Next Agent:** [e.g. 🔍 Core Reviewer]  
 👉 **Next Action:** Switch model to `[Recommended Next Model]` and type `"Proceed"`
 ---
 ```
@@ -50,32 +58,32 @@ sequenceDiagram
     actor User as 👤 Human
     participant Orch as 🧠 Orchestrator [Gemini Pro High]
     participant Plan as 📋 Plan Reviewer [Claude Opus 4.6]
-    participant DB as 🗄️ DB Builder [Flash 3.7 High]
-    participant Review as 🔍 Code Reviewer [Gemini Pro High]
-    participant Backend as ⚙️ Backend Builder [Flash 3.7 High]
-    participant API as 🔌 API Builder [Flash 3.7 High]
-    participant UI as 🎨 UI Builder [Claude Sonnet 4.6]
-    participant Test as 🧪 Test Builder [Flash 3.7 High]
+    participant Core as 🏗️ Core Builder [Flash 3.7 High]
+    participant ProRev as 🔍 Core Reviewer [Gemini Pro High]
+    participant UI as 🎨 UI Builder & Rev [Claude Sonnet 4.6]
     participant Docs as 📝 Docs Agent [Flash 3.7 Med]
 
-    User->>Orch: "Start Phase 3, Step 3.1"
-    Orch->>Plan: Decomposes into layer plan
+    User->>Orch: "Start Phase 4"
+    Orch->>Orch: Scopes batch to < 70% context limit
+    Orch->>Plan: Decomposes into horizontal layer plan
     User->>Plan: Selects Claude Opus 4.6 -> Types "Proceed"
-    Plan-->>User: Outputs Step Summary with Roadmap Step & Next Action
+    Plan-->>User: Audits plan
     
     rect rgb(240, 245, 255)
-    Note over User,Review: Layer Build & Review Loop
-    User->>DB: Selects Gemini Flash 3.7 High -> Types "Proceed"
-    DB-->>User: Writes DB -> Next Action ("Gemini 3.1 Pro High")
-    User->>Review: Selects Gemini 3.1 Pro High -> Types "Proceed"
-    Review-->>User: Approved -> Next Action ("Gemini Flash 3.7 High for Backend")
-    Note over User,Review: (Repeats for Backend, API, UI, Tests)
+    Note over User,ProRev: Horizontal Batch Build & Review
+    User->>Core: Selects Gemini Flash 3.7 High -> Types "Proceed"
+    Core-->>User: Builds DB, Backend, API, Tests -> Handoff
+    User->>ProRev: Selects Gemini 3.1 Pro High -> Types "Proceed"
+    ProRev-->>User: Reviews & fixes DB/Backend/API -> Handoff to Claude for UI
     end
 
+    User->>UI: Selects Claude Sonnet 4.6 -> Types "Proceed"
+    UI-->>User: Builds & Reviews UI components -> Handoff
+    
     User->>Docs: Selects Gemini Flash 3.7 Med -> Types "Proceed"
-    Docs-->>User: 🛑 Phase Complete: Asks Human to Review & offers Git Branch & Commit
+    Docs-->>User: 🛑 Phase Complete: Asks Human to Review & Branch
     User->>Docs: "Approve and Branch"
-    Docs->>Docs: Updates Docs, Cleans .agents/.handoff/, Commits changes, Creates New Phase Branch
+    Docs->>Docs: Updates Docs, Cleans .agents/.handoff/, Commits, Creates New Branch
 ```
 
 ---
@@ -98,4 +106,3 @@ Whenever a development phase is completed and approved:
    git checkout -b phase-<number>-<feature-name>
    ```
 4. **Clean Ephemeral Workspace:** Reset `.agents/.handoff/` so the new phase begins with an uncluttered context workspace.
-
