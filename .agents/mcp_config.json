@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "dotenv-cli",
+        "-e",
+        ".env.local",
+        "--",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
+    }
+  }
+}
