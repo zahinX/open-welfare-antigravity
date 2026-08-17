@@ -51,7 +51,7 @@
 
 ---
 
-## Phase 3 — Campaign Management (Public Donations)
+## Phase 3 — Campaign Management (Public Donations) ✅
 
 ### Step 3.1: Campaign Database Schema & API ✅
 - [x] Create `campaigns` table migration with RLS — *2026-08-17*
@@ -70,11 +70,17 @@
 - [x] Add campaign progress bar and donation stats — *2026-08-17*
 - [x] Implement responsive card grid layout — *2026-08-17*
 
-### Step 3.4: Donation Flow
-- [ ] Create `donations` table migration with RLS
-- [ ] Build donation form component
-- [ ] Implement donation recording server action
-- [ ] Add donation confirmation and receipt display
+### Step 3.4: Campaign Data & UI Refinement ✅
+- [x] Improve global UI contrast (lighter dark backgrounds, better text visibility) — *2026-08-17*
+- [x] Add `currency` column to `campaigns` table and form (e.g. BDT, USD) — *2026-08-17*
+- [x] Add `verification_text` and `verification_link` columns to `campaigns` table — *2026-08-17*
+- [x] Make campaign verification info dynamic in the public detail view — *2026-08-17*
+
+### Step 3.5: Donation Flow ✅
+- [x] Create `donations` table migration with RLS — *2026-08-17*
+- [x] Build donation form component with live currency conversion — *2026-08-17*
+- [x] Implement donation recording server action — *2026-08-17*
+- [x] Add donation confirmation and receipt display — *2026-08-17*
 
 ---
 

@@ -14,13 +14,13 @@ export default async function PublicCampaignsPage() {
     <div className="space-y-10">
       {/* Hero Header */}
       <section className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-400">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-semibold text-emerald-300">
           Community Initiatives
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
           Active Welfare Campaigns
         </h1>
-        <p className="text-base text-zinc-400 max-w-2xl leading-relaxed">
+        <p className="text-base text-zinc-200 max-w-2xl leading-relaxed">
           Support verified emergency relief, food distribution, and community projects.
           Every donation is tracked transparently.
         </p>
@@ -30,7 +30,7 @@ export default async function PublicCampaignsPage() {
       {error && (
         <div
           role="alert"
-          className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+          className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm"
         >
           Failed to load campaigns: {error}
         </div>
@@ -47,8 +47,8 @@ export default async function PublicCampaignsPage() {
           ))}
         </section>
       ) : !error ? (
-        <div className="text-center py-16 px-6 rounded-2xl border border-zinc-800 bg-zinc-900/30">
-          <div className="w-12 h-12 rounded-full bg-zinc-800/80 mx-auto flex items-center justify-center text-zinc-400 mb-4">
+        <div className="text-center py-16 px-6 rounded-2xl border border-zinc-700 bg-zinc-800/40">
+          <div className="w-12 h-12 rounded-full bg-zinc-700/80 mx-auto flex items-center justify-center text-zinc-200 mb-4">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -59,7 +59,7 @@ export default async function PublicCampaignsPage() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={1.8}
+                strokeWidth={2}
                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
               />
             </svg>
@@ -67,7 +67,7 @@ export default async function PublicCampaignsPage() {
           <h2 className="text-lg font-semibold text-white mb-1">
             No Active Campaigns Found
           </h2>
-          <p className="text-sm text-zinc-500 max-w-sm mx-auto">
+          <p className="text-sm text-zinc-300 max-w-sm mx-auto">
             There are currently no active public campaigns. Check back soon for new community initiatives.
           </p>
         </div>

@@ -1,0 +1,9 @@
+{
+  "status": "done",
+  "files": [
+    "lib/validations/donation.ts",
+    "lib/actions/donation.actions.ts"
+  ],
+  "actions": ["createDonationAction"],
+  "schemas": ["createDonationSchema"]
+}

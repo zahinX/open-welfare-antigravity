@@ -4,26 +4,28 @@ import {
   updateCampaignAction,
   deleteCampaignAction,
 } from '@/lib/actions/campaign.actions'
-import { getUserProfile } from '@/lib/supabase/server'
 import * as campaignService from '@/lib/services/campaign'
+import { getUserProfile } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-// Mock dependencies
+// Mock next/cache
 vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
 }))
 
+// Mock Supabase server helper
 vi.mock('@/lib/supabase/server', () => ({
   getUserProfile: vi.fn(),
 }))
 
+// Mock campaign service
 vi.mock('@/lib/services/campaign', () => ({
   createCampaign: vi.fn(),
   updateCampaign: vi.fn(),
   deleteCampaign: vi.fn(),
 }))
 
-describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
+describe('Campaign Server Actions', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -36,6 +38,7 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
         title: 'Emergency Medical Camp',
         description: 'Fundraiser for medical aid',
         target_amount: 10000,
+        currency: 'BDT',
         status: 'draft',
       })
 
@@ -53,6 +56,7 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
         title: 'Emergency Medical Camp',
         description: 'Fundraiser for medical aid',
         target_amount: 10000,
+        currency: 'BDT',
         status: 'draft',
       })
 
@@ -70,6 +74,7 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
         title: 'Hi', // Less than 3 characters
         description: 'Short', // Less than 10 characters
         target_amount: -50, // Negative amount
+        currency: 'INVALID_LONG_CODE', // Invalid currency
         status: 'draft',
       })
 
@@ -78,6 +83,7 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
       expect(result.fieldErrors?.title).toBeDefined()
       expect(result.fieldErrors?.description).toBeDefined()
       expect(result.fieldErrors?.target_amount).toBeDefined()
+      expect(result.fieldErrors?.currency).toBeDefined()
     })
 
     it('should successfully create campaign and revalidate paths for admin', async () => {
@@ -93,6 +99,9 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
         target_amount: 5000,
         current_amount: 0,
         status: 'draft' as const,
+        currency: 'USD',
+        verification_text: 'Verified by Mosque Admin',
+        verification_link: 'https://example.com/proof',
         deadline_at: null,
         created_by: 'admin-1',
         created_at: new Date().toISOString(),
@@ -107,6 +116,9 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
         title: 'Winter Blanket Drive',
         description: 'Distributing warm blankets to the needy',
         target_amount: 5000,
+        currency: 'USD',
+        verification_text: 'Verified by Mosque Admin',
+        verification_link: 'https://example.com/proof',
         status: 'draft',
       })
 
@@ -116,6 +128,9 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
         title: 'Winter Blanket Drive',
         description: 'Distributing warm blankets to the needy',
         target_amount: 5000,
+        currency: 'USD',
+        verification_text: 'Verified by Mosque Admin',
+        verification_link: 'https://example.com/proof',
         status: 'draft',
         created_by: 'admin-1',
       })
@@ -163,6 +178,9 @@ describe('Campaign Server Actions (lib/actions/campaign.actions.ts)', () => {
         target_amount: 8000,
         current_amount: 2000,
         status: 'active' as const,
+        currency: 'BDT',
+        verification_text: 'Updated verification note',
+        verification_link: null,
         deadline_at: null,
         created_by: 'admin-1',
         created_at: new Date().toISOString(),

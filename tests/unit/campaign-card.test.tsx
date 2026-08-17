@@ -4,28 +4,28 @@ import { ProgressBar } from '@/components/campaigns/ProgressBar'
 import { CampaignCard } from '@/components/campaigns/CampaignCard'
 import { Campaign } from '@/lib/supabase/database.types'
 
-describe('Public Campaign UI Components', () => {
+describe('Campaign Public Components', () => {
   describe('<ProgressBar />', () => {
-    it('renders with correct progress percentage and ARIA attributes', () => {
-      render(<ProgressBar current={2500} target={5000} showLabel />)
+    it('renders with correct aria attributes and progress calculation', () => {
+      render(<ProgressBar current={5000} target={10000} />)
 
       const progressBar = screen.getByRole('progressbar')
       expect(progressBar).toBeInTheDocument()
-      expect(progressBar).toHaveAttribute('aria-valuenow', '2500')
+      expect(progressBar).toHaveAttribute('aria-valuenow', '5000')
       expect(progressBar).toHaveAttribute('aria-valuemin', '0')
-      expect(progressBar).toHaveAttribute('aria-valuemax', '5000')
+      expect(progressBar).toHaveAttribute('aria-valuemax', '10000')
       expect(progressBar).toHaveAttribute(
         'aria-label',
         'Fundraising progress: 50% of goal reached'
       )
-      expect(screen.getByText('50.0% funded')).toBeInTheDocument()
-      expect(screen.getByText('50% of goal')).toBeInTheDocument()
     })
 
-    it('caps percentage at 100% when current exceeds target', () => {
-      render(<ProgressBar current={6000} target={5000} showLabel />)
+    it('sets correct aria attributes and shows exact percentage when showLabel is true', () => {
+      render(<ProgressBar current={12000} target={10000} showLabel />)
 
       const progressBar = screen.getByRole('progressbar')
+      expect(progressBar).toHaveAttribute('aria-valuenow', '12000')
+      expect(progressBar).toHaveAttribute('aria-valuemax', '10000')
       expect(progressBar).toHaveAttribute(
         'aria-label',
         'Fundraising progress: 100% of goal reached'
@@ -53,6 +53,9 @@ describe('Public Campaign UI Components', () => {
       target_amount: 100000,
       current_amount: 45000,
       status: 'active',
+      currency: 'BDT',
+      verification_text: 'Verified by Mosque Admin',
+      verification_link: 'https://example.com/proof',
       deadline_at: '2026-12-31T23:59:59.000Z',
       created_by: 'admin-1',
       created_at: '2026-08-01T10:00:00.000Z',
@@ -96,6 +99,19 @@ describe('Public Campaign UI Components', () => {
       render(<CampaignCard campaign={mockOngoingCampaign} />)
 
       expect(screen.getByText('Ongoing')).toBeInTheDocument()
+    })
+
+    it('renders international currencies correctly (e.g. USD)', () => {
+      const mockUsdCampaign: Campaign = {
+        ...mockActiveCampaign,
+        currency: 'USD',
+        target_amount: 5000,
+        current_amount: 2500,
+      }
+
+      render(<CampaignCard campaign={mockUsdCampaign} />)
+      expect(screen.getByText('$2,500')).toBeInTheDocument()
+      expect(screen.getByText(/of \$5,000/i)).toBeInTheDocument()
     })
   })
 })

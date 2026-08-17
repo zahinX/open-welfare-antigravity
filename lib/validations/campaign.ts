@@ -15,6 +15,23 @@ export const createCampaignSchema = z.object({
     .number()
     .min(0, { message: 'Target amount cannot be negative' })
     .default(0),
+  currency: z
+    .string()
+    .length(3, { message: 'Currency must be a 3-letter ISO code' })
+    .transform((val) => val.toUpperCase())
+    .default('BDT'),
+  verification_text: z
+    .string()
+    .max(255, { message: 'Verification text cannot exceed 255 characters' })
+    .nullable()
+    .optional(),
+  verification_link: z
+    .string()
+    .url({ message: 'Verification link must be a valid URL' })
+    .or(z.literal(''))
+    .transform((val) => (val && val.trim() !== '' ? val.trim() : null))
+    .nullable()
+    .optional(),
   status: campaignStatusSchema.default('draft'),
   deadline_at: z
     .string()
@@ -45,6 +62,18 @@ export const updateCampaignSchema = z.object({
     .coerce
     .number()
     .min(0, { message: 'Current amount cannot be negative' })
+    .optional(),
+  verification_text: z
+    .string()
+    .max(255, { message: 'Verification text cannot exceed 255 characters' })
+    .nullable()
+    .optional(),
+  verification_link: z
+    .string()
+    .url({ message: 'Verification link must be a valid URL' })
+    .or(z.literal(''))
+    .transform((val) => (val && val.trim() !== '' ? val.trim() : null))
+    .nullable()
     .optional(),
   status: campaignStatusSchema.optional(),
   deadline_at: z

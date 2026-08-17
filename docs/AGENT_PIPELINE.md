@@ -73,7 +73,24 @@ sequenceDiagram
     end
 
     User->>Docs: Selects Gemini Flash 3.7 Med -> Types "Proceed"
-    Docs-->>User: 🛑 Phase Complete: Asks Human to Review & offers Git Push
-    User->>Docs: "Approve and Push"
-    Docs->>Docs: Updates Docs, Cleans .agents/.handoff/, Runs Git Commit & Push
+    Docs-->>User: 🛑 Phase Complete: Asks Human to Review & offers Git Branch & Commit
+    User->>Docs: "Approve and Branch"
+    Docs->>Docs: Updates Docs, Cleans .agents/.handoff/, Commits changes, Creates New Phase Branch
 ```
+
+---
+
+## 4. Phase Completion & Branching Protocol
+
+Whenever a development phase is completed:
+1. **Commit Previous Phase:** Commit all working migrations, services, actions, UI components, tests, and updated documentation on the active branch:
+   ```bash
+   git add .
+   git commit -m "feat(<phase>): complete <phase-name> (closes Phase X)"
+   ```
+2. **Branch for New Phase:** Create and switch to a dedicated feature branch for the upcoming phase before any code or planning is initialized:
+   ```bash
+   git checkout -b phase-<number>-<feature-name>
+   ```
+3. **Clean Ephemeral Workspace:** Reset `.agents/.handoff/` so the new phase begins with an uncluttered context workspace.
+

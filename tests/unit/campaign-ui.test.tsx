@@ -32,7 +32,8 @@ describe('Admin Campaign UI Components', () => {
 
       expect(screen.getByLabelText(/Campaign Title/i)).toHaveValue('')
       expect(screen.getByLabelText(/Description/i)).toHaveValue('')
-      expect(screen.getByLabelText(/Target Amount/i)).toHaveValue(0)
+      expect(screen.getByLabelText(/Target Goal Amount/i)).toHaveValue(0)
+      expect(screen.getByLabelText(/Campaign Base Currency/i)).toHaveValue('BDT')
       expect(screen.getByLabelText(/Status/i)).toHaveValue('draft')
       expect(screen.getByRole('button', { name: /Create Campaign/i })).toBeInTheDocument()
       expect(screen.getByRole('link', { name: /Cancel/i })).toHaveAttribute(
@@ -49,6 +50,9 @@ describe('Admin Campaign UI Components', () => {
         target_amount: 15000,
         current_amount: 3200,
         status: 'active',
+        currency: 'USD',
+        verification_text: 'Verified by Mosque Admin',
+        verification_link: 'https://example.com/proof.pdf',
         deadline_at: '2026-09-01T12:00:00.000Z',
         created_by: 'admin-1',
         created_at: '2026-08-01T10:00:00.000Z',
@@ -60,7 +64,10 @@ describe('Admin Campaign UI Components', () => {
       expect(screen.getByLabelText(/Description/i)).toHaveValue(
         'Providing food packages for families in need.'
       )
-      expect(screen.getByLabelText(/Target Amount/i)).toHaveValue(15000)
+      expect(screen.getByLabelText(/Target Goal Amount/i)).toHaveValue(15000)
+      expect(screen.getByText(/USD — Locked to protect donation accounting/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/Verification Text/i)).toHaveValue('Verified by Mosque Admin')
+      expect(screen.getByLabelText(/Verification Proof URL/i)).toHaveValue('https://example.com/proof.pdf')
       expect(screen.getByLabelText(/Status/i)).toHaveValue('active')
       expect(screen.getByLabelText(/Deadline/i)).toHaveValue('2026-09-01T12:00')
       expect(screen.getByRole('button', { name: /Save Changes/i })).toBeInTheDocument()
@@ -77,9 +84,13 @@ describe('Admin Campaign UI Components', () => {
       fireEvent.change(descInput, { target: { value: 'Emergency warm clothing distribution' } })
       expect(descInput).toHaveValue('Emergency warm clothing distribution')
 
-      const targetInput = screen.getByLabelText(/Target Amount/i)
+      const targetInput = screen.getByLabelText(/Target Goal Amount/i)
       fireEvent.change(targetInput, { target: { value: '25000' } })
       expect(targetInput).toHaveValue(25000)
+
+      const currencySelect = screen.getByLabelText(/Campaign Base Currency/i)
+      fireEvent.change(currencySelect, { target: { value: 'USD' } })
+      expect(currencySelect).toHaveValue('USD')
 
       const statusSelect = screen.getByLabelText(/Status/i)
       fireEvent.change(statusSelect, { target: { value: 'completed' } })

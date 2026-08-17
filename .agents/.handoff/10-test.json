@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "summary": "63 unit and integration tests passed across 10 test suites. 3 Playwright E2E browser tests passed.",
+  "files_created": [
+    "tests/unit/currency-service.test.ts",
+    "tests/unit/donation-service.test.ts",
+    "tests/unit/donation-ui.test.tsx",
+    "tests/integration/donation-actions.test.ts",
+    "tests/e2e/donation-flow.spec.ts"
+  ],
+  "failures": []
+}

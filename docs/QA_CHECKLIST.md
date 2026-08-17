@@ -132,3 +132,43 @@ This document contains structured manual testing plans and regression matrices f
   - `components/campaigns/**`
   - `lib/services/campaign.ts`
   - `components/dashboard/Sidebar.tsx`
+
+### Step 3.4: Campaign Data & UI Refinement
+- **Automated Coverage:**
+  - `tests/unit/campaign-card.test.tsx` (International currency formatting, dynamic progress rendering)
+  - `tests/unit/campaign-ui.test.tsx` (Campaign create/edit forms with multi-currency selector and verification metadata)
+  - `tests/integration/campaign-actions.test.ts` (Validations and server actions for new currency and verification columns)
+  - `tests/e2e/campaign-browsing.spec.ts` (Public browsing journey with updated high-contrast layout)
+- **Manual QA Script:**
+  1. Log in as an admin and go to `/dashboard/campaigns/new`.
+  2. Create a campaign with a non-BDT currency (e.g. `USD`), custom verification text (e.g. `Verified by Mosque Admin Committee`), and a verification proof URL (e.g. `https://example.com/proof.pdf`).
+  3. Submit and verify campaign creation succeeds.
+  4. Edit the newly created campaign: verify that the base currency is locked/immutable with an explanatory note, but verification fields can be updated.
+  5. Go to the public `/campaigns` page: verify the card renders the raised/target amount with the correct currency symbol (e.g. `$`).
+  6. Click into `/campaigns/[id]`: verify the dynamic verification text is displayed with a live pulse indicator, and the "View Verification Proof" link correctly opens the external URL in a new tab.
+  7. Check page aesthetics and verify high readability of small text and comfortable dark background (`bg-zinc-900`).
+### Step 3.5: Donation Flow & Currency Conversion
+- **Automated Coverage:**
+  - `tests/unit/currency-service.test.ts` (Cross-currency math, exchange rate lookups, fallback rates, and rounding)
+  - `tests/unit/donation-service.test.ts` (Supabase DB donation insertion, campaign queries, and donor lookups)
+  - `tests/unit/donation-ui.test.tsx` (Donation modal, preset amounts, confirmation receipt, and supporter list anonymity)
+  - `tests/integration/donation-actions.test.ts` (Zod schema validation, guest vs authenticated donors, active campaign verification, and cache revalidation)
+  - `tests/e2e/donation-flow.spec.ts` (Playwright browser E2E test verifying full public donation flow, modal interactions, currency switching, and live conversion preview)
+- **Manual QA Script:**
+  1. Open `http://localhost:3000/campaigns` and click into an active campaign.
+  2. Click the "Donate Now" button to open the Donation Modal.
+  3. Verify the currency dropdown lists all global currencies (BDT, USD, EUR, GBP, etc.).
+  4. Select a foreign currency (e.g. `USD`), click the `$25` preset or enter a custom amount.
+  5. Verify the live conversion box accurately displays the equivalent credited amount in the campaign's base currency (e.g. `≈ ৳3,000.00 BDT`).
+  6. Fill in optional donor info or check "Make my donation anonymous".
+  7. Choose a payment channel (bKash/Nagad, Card, or Manual Cash) and submit the form.
+  8. Verify the loading spinner appears during processing and resolves to the "Donation Confirmation" receipt card showing the transaction ID.
+  9. Click "Done" and verify the progress bar updates with the new credited total, and the recent supporters list reflects the contribution.
+- **Impact Matrix (Regression Check):**
+  - `supabase/migrations/20260817000004_donations_and_progress_trigger.sql`
+  - `lib/services/currency.ts` & `lib/services/donation.ts`
+  - `lib/actions/donation.actions.ts`
+  - `components/campaigns/DonationModal.tsx`, `DonationForm.tsx`, `DonationConfirmation.tsx`, `RecentSupportersList.tsx`
+  - `app/(public)/campaigns/[id]/page.tsx`
+
+

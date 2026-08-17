@@ -41,6 +41,9 @@ export type Database = {
           target_amount: number
           current_amount: number
           status: 'draft' | 'active' | 'completed' | 'cancelled'
+          currency: string
+          verification_text: string | null
+          verification_link: string | null
           deadline_at: string | null
           created_by: string
           created_at: string
@@ -52,6 +55,9 @@ export type Database = {
           target_amount?: number
           current_amount?: number
           status?: 'draft' | 'active' | 'completed' | 'cancelled'
+          currency?: string
+          verification_text?: string | null
+          verification_link?: string | null
           deadline_at?: string | null
           created_by: string
           created_at?: string
@@ -63,6 +69,9 @@ export type Database = {
           target_amount?: number
           current_amount?: number
           status?: 'draft' | 'active' | 'completed' | 'cancelled'
+          currency?: string
+          verification_text?: string | null
+          verification_link?: string | null
           deadline_at?: string | null
           created_by?: string
           created_at?: string
@@ -82,8 +91,16 @@ export type Database = {
           id: string
           campaign_id: string
           donor_id: string | null
+          donor_name: string | null
+          donor_email: string | null
           donor_name_override: string | null
           amount: number
+          currency: string
+          converted_amount: number
+          exchange_rate: number
+          payment_method: string
+          payment_status: string
+          is_anonymous: boolean
           is_public: boolean
           created_at: string
         }
@@ -91,8 +108,16 @@ export type Database = {
           id?: string
           campaign_id: string
           donor_id?: string | null
+          donor_name?: string | null
+          donor_email?: string | null
           donor_name_override?: string | null
           amount: number
+          currency?: string
+          converted_amount?: number
+          exchange_rate?: number
+          payment_method?: string
+          payment_status?: string
+          is_anonymous?: boolean
           is_public?: boolean
           created_at?: string
         }
@@ -100,8 +125,16 @@ export type Database = {
           id?: string
           campaign_id?: string
           donor_id?: string | null
+          donor_name?: string | null
+          donor_email?: string | null
           donor_name_override?: string | null
           amount?: number
+          currency?: string
+          converted_amount?: number
+          exchange_rate?: number
+          payment_method?: string
+          payment_status?: string
+          is_anonymous?: boolean
           is_public?: boolean
           created_at?: string
         }
@@ -321,6 +354,7 @@ export type UserRole = Database['public']['Enums']['user_role']
 // Convenience type aliases for donations
 export type Donation = Database['public']['Tables']['donations']['Row']
 export type DonationInsert = Database['public']['Tables']['donations']['Insert']
+export type DonationUpdate = Database['public']['Tables']['donations']['Update']
 
 // Convenience type aliases for beneficiaries
 export type Beneficiary = Database['public']['Tables']['beneficiaries']['Row']
