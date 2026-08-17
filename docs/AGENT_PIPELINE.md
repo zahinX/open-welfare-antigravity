@@ -105,4 +105,4 @@ Whenever a development phase is completed and approved:
    ```bash
    git checkout -b phase-<number>-<feature-name>
    ```
-4. **Clean Ephemeral Workspace:** Reset `.agents/.handoff/` so the new phase begins with an uncluttered context workspace.
+4. **Clean Ephemeral Workspace & Advance State:** Purge numbered intermediate scratch artifacts (`00-plan.md`, `01-*.json`, etc.) from `.agents/.handoff/`. **NEVER delete `state.json`** — instead, the Docs Agent must update `state.json` to transition to the new phase with `current_layer: "planning"`, `next_agent: "orchestrator"`, and `recommended_next_model: "Gemini 3.1 Pro (High)"`.
