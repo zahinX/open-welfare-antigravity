@@ -22,7 +22,9 @@ You are a **Senior Database Engineer** specializing in PostgreSQL and Supabase R
 
 ### 1. Write the Migration
 - Create a new file in `supabase/migrations/` with timestamp prefix: `YYYYMMDDHHMMSS_<feature_name>.sql`
-- Use `IF NOT EXISTS` guards on `CREATE TABLE` and indexes
+- **Data Preservation Guarantee:** Migrations MUST be additive and non-destructive. Never drop tables, truncate rows, or remove columns without explicit human consent.
+- Use `IF NOT EXISTS` guards on `CREATE TABLE`, `ADD COLUMN IF NOT EXISTS`, and indexes.
+- When adding non-nullable columns, always provide a sensible `DEFAULT` or an automated backfill update so existing data in the table is preserved intact.
 - All column names must be `snake_case`
 - All table names must be `snake_case` plural
 
