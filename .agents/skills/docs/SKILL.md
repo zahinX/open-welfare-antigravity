@@ -55,6 +55,12 @@ feat(<scope>): <concise description>
 Closes roadmap step <X.Y>
 ```
 
+### 5. Phase Completion & Pull Request Protocol
+If the completed step was the final step of a phase:
+- Commit all changes on the completed phase branch.
+- Open a Pull Request merging the completed phase branch to `main` (e.g. via `gh pr create`).
+- Checkout a new feature branch for the upcoming phase before handoff to the Orchestrator.
+
 ## Output Format
 
 ```json
@@ -62,6 +68,7 @@ Closes roadmap step <X.Y>
   "status": "done",
   "files_updated": ["docs/PROJECT_ROADMAP.md", "docs/QA_CHECKLIST.md"],
   "design_system_updated": true | false,
-  "commit_message": "feat(campaigns): add campaign CRUD and public listing\n\n- Migration: campaigns table with RLS\n..."
+  "commit_message": "feat(campaigns): add campaign CRUD and public listing\n\n- Migration: campaigns table with RLS\n...",
+  "pull_request_created": true | false
 }
 ```

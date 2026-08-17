@@ -80,17 +80,22 @@ sequenceDiagram
 
 ---
 
-## 4. Phase Completion & Branching Protocol
+## 4. Phase Completion, Pull Request & Branching Protocol
 
-Whenever a development phase is completed:
+Whenever a development phase is completed and approved:
 1. **Commit Previous Phase:** Commit all working migrations, services, actions, UI components, tests, and updated documentation on the active branch:
    ```bash
    git add .
    git commit -m "feat(<phase>): complete <phase-name> (closes Phase X)"
    ```
-2. **Branch for New Phase:** Create and switch to a dedicated feature branch for the upcoming phase before any code or planning is initialized:
+2. **Open Pull Request to Main:** Create a pull request targeting `main` to merge the completed phase code:
+   ```bash
+   git push origin <active-phase-branch>
+   gh pr create --base main --head <active-phase-branch> --title "feat: Phase X — <Phase Name>" --body "..."
+   ```
+3. **Branch for New Phase:** Create and switch to a dedicated feature branch for the upcoming phase before any code or planning is initialized:
    ```bash
    git checkout -b phase-<number>-<feature-name>
    ```
-3. **Clean Ephemeral Workspace:** Reset `.agents/.handoff/` so the new phase begins with an uncluttered context workspace.
+4. **Clean Ephemeral Workspace:** Reset `.agents/.handoff/` so the new phase begins with an uncluttered context workspace.
 
