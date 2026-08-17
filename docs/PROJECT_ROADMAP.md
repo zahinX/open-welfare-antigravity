@@ -64,11 +64,11 @@
 - [x] Build `/dashboard/campaigns/[id]/edit` edit form — *2026-08-17*
 - [x] Add campaign status management (draft/active/completed) — *2026-08-17*
 
-### Step 3.3: Public Campaign Browsing
-- [ ] Build `/campaigns` public listing page
-- [ ] Build `/campaigns/[id]` campaign detail page
-- [ ] Add campaign progress bar and donation stats
-- [ ] Implement responsive card grid layout
+### Step 3.3: Public Campaign Browsing ✅
+- [x] Build `/campaigns` public listing page — *2026-08-17*
+- [x] Build `/campaigns/[id]` campaign detail page — *2026-08-17*
+- [x] Add campaign progress bar and donation stats — *2026-08-17*
+- [x] Implement responsive card grid layout — *2026-08-17*
 
 ### Step 3.4: Donation Flow
 - [ ] Create `donations` table migration with RLS

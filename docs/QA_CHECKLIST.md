@@ -113,3 +113,22 @@ This document contains structured manual testing plans and regression matrices f
   - `app/dashboard/campaigns/**`
   - `components/dashboard/campaigns/CampaignForm.tsx`
   - `components/dashboard/campaigns/DeleteCampaignButton.tsx`
+
+### Step 3.3: Public Campaign Browsing
+- **Automated Coverage:**
+  - `tests/unit/public-campaign-service.test.ts` (service functions `getPublicCampaigns` and `getPublicCampaignById`)
+  - `tests/unit/campaign-card.test.tsx` (UI components `ProgressBar` and `CampaignCard`)
+  - `tests/e2e/campaign-browsing.spec.ts` (E2E navigation flow)
+- **Manual QA Script:**
+  1. Navigate to `http://localhost:3000` (Home page) as an unauthenticated visitor.
+  2. Click "View Campaigns" in the hero section or "Campaigns" in the public navbar.
+  3. Verify the `/campaigns` page displays all active and completed campaigns in a responsive card grid.
+  4. Verify each card shows the campaign title, badge status, progress bar, raised amount, and target goal.
+  5. Click on any campaign card to navigate to `/campaigns/[id]`.
+  6. Verify the detailed campaign view renders full description, deadline, fundraising metrics, and back button.
+  7. Verify draft/cancelled campaigns return a 404 Not Found page when accessed directly by ID.
+- **Impact Matrix (Regression Check):**
+  - `app/(public)/**`
+  - `components/campaigns/**`
+  - `lib/services/campaign.ts`
+  - `components/dashboard/Sidebar.tsx`

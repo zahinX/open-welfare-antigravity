@@ -1,0 +1,13 @@
+{
+  "status": "done",
+  "files": ["lib/services/campaign.ts"],
+  "exports": [
+    "getCampaigns",
+    "getCampaignById",
+    "createCampaign",
+    "updateCampaign",
+    "deleteCampaign",
+    "getPublicCampaigns",
+    "getPublicCampaignById"
+  ]
+}

@@ -104,6 +104,17 @@ export function Sidebar({ role, fullName }: SidebarProps) {
               <p className="text-xs text-zinc-500 capitalize">{role}</p>
             </div>
           </div>
+          <div className="space-y-1 mb-2">
+            <Link
+              href="/campaigns"
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              View Public Site
+            </Link>
+          </div>
           <form action={logout}>
             <button 
               type="submit"

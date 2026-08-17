@@ -1,13 +1,15 @@
 {
   "phase": "Phase 3",
-  "step": "Step 3.2",
-  "step_title": "Admin Campaign Management UI",
+  "step": "Step 3.3",
+  "step_title": "Public Campaign Browsing",
   "current_layer": "test",
   "next_agent": "docs-agent",
-  "recommended_next_model": "Gemini 3.7 Flash (Medium)",
+  "recommended_next_model": "Gemini 3.7 Flash (High)",
   "history": [
     "orchestrator",
     "plan-reviewer",
+    "backend-builder",
+    "code-reviewer",
     "ui-builder",
     "code-reviewer",
     "test-builder"

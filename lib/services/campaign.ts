@@ -155,3 +155,65 @@ export async function deleteCampaign(
     }
   }
 }
+
+/**
+ * Retrieve public campaigns (active and completed only) ordered by creation date.
+ */
+export async function getPublicCampaigns(
+  options: { limit?: number } = {}
+): Promise<ServiceResponse<Campaign[]>> {
+  try {
+    const supabase = await createClient()
+    let query = supabase
+      .from('campaigns')
+      .select('*')
+      .in('status', ['active', 'completed'])
+      .order('created_at', { ascending: false })
+
+    if (options.limit) {
+      query = query.limit(options.limit)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      return { data: null, error: error.message }
+    }
+
+    return { data, error: null }
+  } catch (err) {
+    return {
+      data: null,
+      error: err instanceof Error ? err.message : 'Unknown error fetching public campaigns',
+    }
+  }
+}
+
+/**
+ * Retrieve a single public campaign by ID, ensuring it is active or completed.
+ */
+export async function getPublicCampaignById(
+  id: string
+): Promise<ServiceResponse<Campaign>> {
+  try {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('campaigns')
+      .select('*')
+      .eq('id', id)
+      .in('status', ['active', 'completed'])
+      .single()
+
+    if (error) {
+      return { data: null, error: error.message }
+    }
+
+    return { data, error: null }
+  } catch (err) {
+    return {
+      data: null,
+      error: err instanceof Error ? err.message : 'Unknown error fetching public campaign',
+    }
+  }
+}
+
