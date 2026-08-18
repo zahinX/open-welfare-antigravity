@@ -105,24 +105,24 @@
 
 ---
 
-## Phase 5 — Volunteer Shift Management
+## Phase 5 — Volunteer Shift Management ✅
 
-### Step 5.1: Volunteer Database Schema & API
-- [ ] Create `volunteer_shifts` table migration with RLS
-- [ ] Create `volunteer_signups` table migration with RLS
-- [ ] Build server actions for shift management
+### Step 5.1: Volunteer Database Schema & API ✅
+- [x] Create `volunteer_shifts` table migration with RLS — *2026-08-18*
+- [x] Create `volunteer_signups` table migration with RLS — *2026-08-18*
+- [x] Build server actions for shift management — *2026-08-18*
 
-### Step 5.2: Admin Shift Management UI
-- [ ] Build `/dashboard/volunteers/shifts` list page
-- [ ] Build `/dashboard/volunteers/shifts/new` create form
-- [ ] Build shift detail page with signup roster
-- [ ] Add shift status management
+### Step 5.2: Admin Shift Management UI ✅
+- [x] Build `/dashboard/volunteers/shifts` list page — *2026-08-18*
+- [x] Build `/dashboard/volunteers/shifts/new` create form — *2026-08-18*
+- [x] Build shift detail page with signup roster — *2026-08-18*
+- [x] Add shift status management — *2026-08-18*
 
-### Step 5.3: Public Volunteer Sign-Up
-- [ ] Build `/volunteer` public page with available shifts
-- [ ] Implement volunteer sign-up flow
-- [ ] Add sign-up confirmation and calendar integration
-- [ ] Build volunteer profile/history page
+### Step 5.3: Public Volunteer Sign-Up ✅
+- [x] Build `/volunteer` public page with available shifts — *2026-08-18*
+- [x] Implement volunteer sign-up flow — *2026-08-18*
+- [x] Add sign-up confirmation and calendar integration — *2026-08-18*
+- [x] Build volunteer profile/history page — *2026-08-18*
 
 ---
 

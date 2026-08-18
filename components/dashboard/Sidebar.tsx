@@ -19,7 +19,7 @@ export function Sidebar({ role, fullName }: SidebarProps) {
     { name: 'Campaigns', href: '/dashboard/campaigns' },
     { name: 'Beneficiaries', href: '/dashboard/beneficiaries' },
     { name: 'Disbursements', href: '/dashboard/disbursements' },
-    { name: 'Volunteers', href: '/dashboard/volunteers' },
+    { name: 'Volunteer Shifts', href: '/dashboard/volunteers/shifts' },
   ]
 
   const publicLinks = [

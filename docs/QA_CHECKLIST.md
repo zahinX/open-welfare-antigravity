@@ -217,3 +217,47 @@ This document contains structured manual testing plans and regression matrices f
   - `components/dashboard/disbursements/**`
   - `lib/services/disbursement.ts`
   - `lib/actions/disbursement.actions.ts`
+
+---
+
+## 📋 Phase 5: Volunteer Shift Management
+
+### Step 5.1: Volunteer Database Schema & API
+- **Automated Coverage:**
+  - `tests/unit/volunteer-service.test.ts` (CRUD operations for shifts and signups, aggregations)
+  - `tests/unit/volunteer-actions.test.ts` (Server Action auth enforcement, validation)
+  - `tests/integration/volunteer-actions.test.ts` (Role-based access tests)
+- **Manual QA Script:**
+  1. Verify Supabase tables `volunteer_shifts` and `volunteer_signups` exist with appropriate RLS policies.
+  2. Verify that non-admin authenticated users or public visitors cannot invoke admin shift actions.
+- **Impact Matrix (Regression Check):**
+  - `supabase/migrations/20260818000001_volunteer_tweaks.sql`
+  - `lib/services/volunteer.ts`
+  - `lib/actions/volunteer.actions.ts`
+  - `lib/validations/volunteer.ts`
+
+### Step 5.2: Admin Shift Management UI
+- **Automated Coverage:** Build validation (`npm run build`) verifies `/dashboard/volunteers/shifts` static/dynamic compilation.
+- **Manual QA Script:**
+  1. Log in as an admin and navigate to `/dashboard/volunteers/shifts`.
+  2. Verify the list of shifts is displayed with capacity progress bars.
+  3. Click "New Shift", fill out the form, and submit.
+  4. Verify redirect to the shifts list and verify the new entry is present.
+  5. Click into the shift detail view and verify the signup roster renders correctly.
+  6. Click "Delete", confirm browser alert, and ensure record is removed.
+- **Impact Matrix (Regression Check):**
+  - `app/dashboard/volunteers/**`
+  - `components/dashboard/volunteers/**`
+  - `components/dashboard/Sidebar.tsx`
+
+### Step 5.3: Public Volunteer Sign-Up
+- **Automated Coverage:** Build validation verifies `/volunteer` and `/volunteer/profile`.
+- **Manual QA Script:**
+  1. Navigate to `/volunteer` as an unauthenticated user and click "Log in to Sign Up" on a shift. Verify redirect to login.
+  2. Log in as a volunteer, navigate to `/volunteer`, and sign up for a shift. Verify success message and UI state change.
+  3. Navigate to `/volunteer/profile` and verify the shift appears in upcoming signups.
+  4. Cancel the signup from the profile page.
+- **Impact Matrix (Regression Check):**
+  - `app/(public)/volunteer/**`
+  - `components/volunteer/**`
+  - `app/(public)/layout.tsx`

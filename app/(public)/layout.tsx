@@ -50,6 +50,12 @@ export default function PublicLayout({
               Campaigns
             </Link>
             <Link
+              href="/volunteer"
+              className="px-3.5 py-2 text-sm font-semibold text-zinc-400 hover:text-zinc-100 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              Volunteer
+            </Link>
+            <Link
               href="/login"
               className="px-4 py-2 text-sm font-bold text-zinc-950 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-xl hover:from-emerald-300 hover:to-teal-300 transition-all duration-200 shadow-md shadow-emerald-500/20 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             >
