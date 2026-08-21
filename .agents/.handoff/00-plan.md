@@ -33,7 +33,7 @@ This phase introduces analytical widgets to the admin dashboard and a suite of r
 - **Integration Tests:**
   - Test Server Actions and Route Handlers for correct authentication and role validation.
 
-## 4. UI Layer (Claude 4.6)
+## 4. UI Layer (Claude 3.7 Sonnet)
 **Goal:** Build the visual dashboard widgets and the new reporting views.
 
 - **Admin Dashboard (`app/dashboard/page.tsx`):**

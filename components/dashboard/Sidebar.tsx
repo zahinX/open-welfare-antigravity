@@ -1,4 +1,4 @@
-'use client'
+'use client' // Required for usePathname active state and mobile menu toggle
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'

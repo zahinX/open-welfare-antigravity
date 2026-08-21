@@ -1,4 +1,4 @@
-'use client'
+'use client' // Required for useState, tab switching, and CSV export handlers
 
 import { useState } from 'react'
 import {

@@ -1,5 +1,3 @@
-'use client'
-
 import { DashboardSummary } from '@/lib/services/analytics'
 
 export function DashboardSummaryCards({ summary }: { summary: DashboardSummary }) {

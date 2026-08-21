@@ -1,4 +1,4 @@
-'use client'
+'use client' // Required for Recharts client-side rendering and interactive tooltips
 
 import {
   BarChart,
