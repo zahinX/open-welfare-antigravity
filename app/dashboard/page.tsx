@@ -1,6 +1,6 @@
 import { getDashboardSummaryAction, getBeneficiaryDistributionAction, getVolunteerParticipationAction } from '@/lib/actions/analytics.actions'
 import { DashboardSummaryCards } from '@/components/dashboard/DashboardSummaryCards'
-import { DashboardCharts } from '@/components/dashboard/DashboardCharts'
+import { DashboardChartsWrapper } from '@/components/dashboard/ClientDashboardCharts'
 import { getUserProfile } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
             Dashboard Overview
           </h1>
           <p className="mt-2 text-zinc-400">
-            Welcome back, {profile.full_name.split(' ')[0]}. Here's what's happening today.
+            Welcome back, {profile.full_name.split(' ')[0]}. Here&apos;s what&apos;s happening today.
           </p>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {beneficiaryData ? (
-          <DashboardCharts 
+          <DashboardChartsWrapper 
             type="beneficiary" 
             data={beneficiaryData.byStatus} 
             title="Beneficiaries by Status" 
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
         )}
 
         {volunteerData ? (
-          <DashboardCharts 
+          <DashboardChartsWrapper 
             type="volunteer" 
             data={volunteerData.shiftsWithAttendance.slice(0, 5)} 
             title="Recent Volunteer Shifts Attendance" 

@@ -222,10 +222,22 @@ export async function getVolunteerParticipation(): Promise<ServiceResult<Volunte
     let totalSignups = 0
     let totalAttended = 0
 
-    const shiftsWithAttendance: ShiftParticipationStat[] = shiftList.map((shift: any) => {
+    interface RawShiftSignup {
+      attended: boolean | null
+    }
+    interface RawShiftData {
+      id: string
+      title: string
+      location: string
+      start_time: string
+      max_volunteers: number
+      volunteer_signups?: RawShiftSignup[] | null
+    }
+
+    const shiftsWithAttendance: ShiftParticipationStat[] = (shiftList as unknown as RawShiftData[]).map((shift) => {
       const signups = shift.volunteer_signups || []
       const signupsCount = signups.length
-      const attendedCount = signups.filter((s: any) => s.attended).length
+      const attendedCount = signups.filter((s) => s.attended).length
       const rate = signupsCount > 0 ? Math.round((attendedCount / signupsCount) * 100) : 0
 
       totalSignups += signupsCount

@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     const dateStamp = new Date().toISOString().split('T')[0]
 
     let csvContent = ''
-    let filename = `report-${type}-${dateStamp}.csv`
+    const filename = `report-${type}-${dateStamp}.csv`
 
     switch (type) {
       case 'financial': {

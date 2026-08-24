@@ -19,6 +19,11 @@ export function DonationModal({
   const [isOpen, setIsOpen] = useState(false)
   const [completedDonation, setCompletedDonation] = useState<Donation | null>(null)
 
+  const handleClose = () => {
+    setIsOpen(false)
+    setCompletedDonation(null)
+  }
+
   // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -37,11 +42,6 @@ export function DonationModal({
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [isOpen])
-
-  const handleClose = () => {
-    setIsOpen(false)
-    setCompletedDonation(null)
-  }
 
   const handleSuccess = (donation: Donation) => {
     setCompletedDonation(donation)

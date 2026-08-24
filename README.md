@@ -133,6 +133,7 @@ Given the sensitive nature of beneficiary data and financial donations, security
 ## 🤝 Contributing
 
 We welcome contributions from developers, designers, and product managers! 
+- Please read our [CONTRIBUTING.md](./CONTRIBUTING.md) for full details on our workflow and code standards.
 - Check out our [PROJECT_ROADMAP.md](./docs/PROJECT_ROADMAP.md) to see current priorities.
 - Review our [AGENT_RULES.md](./docs/AGENT_RULES.md) for coding conventions and operational constraints.
 - Please use the provided GitHub Issue templates for feature requests and bug reports.

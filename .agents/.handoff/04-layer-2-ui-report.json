@@ -1,0 +1,22 @@
+{
+  "status": "done",
+  "files": [
+    "components/dashboard/Sidebar.tsx",
+    "components/dashboard/campaigns/DeleteCampaignButton.tsx",
+    "components/dashboard/disbursements/DeleteDisbursementButton.tsx",
+    "components/dashboard/beneficiaries/DeleteBeneficiaryButton.tsx",
+    "components/dashboard/volunteers/DeleteShiftButton.tsx",
+    "app/dashboard/page.tsx",
+    "components/dashboard/DashboardCharts.tsx",
+    "components/dashboard/ClientDashboardCharts.tsx",
+    "README.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "docs/PROJECT_ROADMAP.md"
+  ],
+  "routes": [],
+  "nav_updated": true,
+  "client_components": [
+    "components/dashboard/ClientDashboardCharts.tsx"
+  ]
+}

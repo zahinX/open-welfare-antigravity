@@ -7,6 +7,12 @@ import {
   getBeneficiaryReportAction,
   getVolunteerReportAction,
 } from '@/lib/actions/analytics.actions'
+import type {
+  FinancialSummaryReport,
+  CampaignPerformanceItem,
+  BeneficiaryReportItem,
+  VolunteerShiftReportItem,
+} from '@/lib/services/reports'
 
 type ReportType = 'financial' | 'campaigns' | 'beneficiaries' | 'volunteers'
 
@@ -15,13 +21,23 @@ export function ReportsView() {
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [reportData, setReportData] = useState<any>(null)
+  const [financialData, setFinancialData] = useState<FinancialSummaryReport | null>(null)
+  const [campaignsData, setCampaignsData] = useState<CampaignPerformanceItem[] | null>(null)
+  const [beneficiariesData, setBeneficiariesData] = useState<BeneficiaryReportItem[] | null>(null)
+  const [volunteersData, setVolunteersData] = useState<VolunteerShiftReportItem[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const clearReportData = () => {
+    setFinancialData(null)
+    setCampaignsData(null)
+    setBeneficiariesData(null)
+    setVolunteersData(null)
+  }
 
   const handleGenerateReport = async () => {
     setIsLoading(true)
     setError(null)
-    setReportData(null)
+    clearReportData()
 
     const filter = {
       ...(startDate && { startDate: new Date(startDate).toISOString() }),
@@ -29,23 +45,36 @@ export function ReportsView() {
     }
 
     try {
-      let res
       if (activeTab === 'financial') {
-        res = await getFinancialReportAction(filter)
+        const res = await getFinancialReportAction(filter)
+        if (res.success && res.data) {
+          setFinancialData(res.data)
+        } else {
+          setError(res.error || 'Failed to generate financial report')
+        }
       } else if (activeTab === 'campaigns') {
-        res = await getCampaignPerformanceReportAction(filter)
+        const res = await getCampaignPerformanceReportAction(filter)
+        if (res.success && res.data) {
+          setCampaignsData(res.data)
+        } else {
+          setError(res.error || 'Failed to generate campaign report')
+        }
       } else if (activeTab === 'beneficiaries') {
-        res = await getBeneficiaryReportAction(filter)
+        const res = await getBeneficiaryReportAction(filter)
+        if (res.success && res.data) {
+          setBeneficiariesData(res.data)
+        } else {
+          setError(res.error || 'Failed to generate beneficiary report')
+        }
       } else {
-        res = await getVolunteerReportAction(filter)
+        const res = await getVolunteerReportAction(filter)
+        if (res.success && res.data) {
+          setVolunteersData(res.data)
+        } else {
+          setError(res.error || 'Failed to generate volunteer report')
+        }
       }
-
-      if (res.success) {
-        setReportData(res.data)
-      } else {
-        setError(res.error || 'Failed to generate report')
-      }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)
@@ -58,8 +87,13 @@ export function ReportsView() {
     if (startDate) params.append('startDate', new Date(startDate).toISOString())
     if (endDate) params.append('endDate', new Date(endDate).toISOString())
 
-    // Construct the export URL and trigger download
-    window.location.href = `/api/export/reports?${params.toString()}`
+    const exportUrl = `/api/export/reports?${params.toString()}`
+    const link = document.createElement('a')
+    link.href = exportUrl
+    link.setAttribute('download', '')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const tabs: { id: ReportType; label: string }[] = [
@@ -69,8 +103,14 @@ export function ReportsView() {
     { id: 'volunteers', label: 'Volunteers' },
   ]
 
+  const hasData =
+    (activeTab === 'financial' && !!financialData) ||
+    (activeTab === 'campaigns' && !!campaignsData) ||
+    (activeTab === 'beneficiaries' && !!beneficiariesData) ||
+    (activeTab === 'volunteers' && !!volunteersData)
+
   const renderTableHeaders = () => {
-    if (!reportData) return null
+    if (!hasData) return null
     if (activeTab === 'financial') {
       return (
         <tr>
@@ -120,10 +160,8 @@ export function ReportsView() {
   }
 
   const renderTableRows = () => {
-    if (!reportData) return null
-
-    if (activeTab === 'financial') {
-      return (reportData.items || []).map((item: any) => (
+    if (activeTab === 'financial' && financialData) {
+      return (financialData.items || []).map((item) => (
         <tr key={item.id} className="border-t border-zinc-800">
           <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
             {new Date(item.date).toLocaleDateString()}
@@ -146,8 +184,8 @@ export function ReportsView() {
       ))
     }
 
-    if (activeTab === 'campaigns') {
-      return (reportData as any[]).map((item) => (
+    if (activeTab === 'campaigns' && campaignsData) {
+      return campaignsData.map((item) => (
         <tr key={item.id} className="border-t border-zinc-800">
           <td className="px-6 py-4 text-sm text-zinc-300 max-w-xs truncate">{item.title}</td>
           <td className="px-6 py-4 whitespace-nowrap">
@@ -173,8 +211,8 @@ export function ReportsView() {
       ))
     }
 
-    if (activeTab === 'beneficiaries') {
-      return (reportData as any[]).map((item) => (
+    if (activeTab === 'beneficiaries' && beneficiariesData) {
+      return beneficiariesData.map((item) => (
         <tr key={item.id} className="border-t border-zinc-800">
           <td className="px-6 py-4 text-sm text-zinc-300">{item.fullName}</td>
           <td className="px-6 py-4 whitespace-nowrap">
@@ -195,8 +233,8 @@ export function ReportsView() {
       ))
     }
 
-    if (activeTab === 'volunteers') {
-      return (reportData as any[]).map((item) => (
+    if (activeTab === 'volunteers' && volunteersData) {
+      return volunteersData.map((item) => (
         <tr key={item.id} className="border-t border-zinc-800">
           <td className="px-6 py-4 text-sm text-zinc-300">{item.title}</td>
           <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
@@ -217,6 +255,8 @@ export function ReportsView() {
         </tr>
       ))
     }
+
+    return null
   }
 
   return (
@@ -231,7 +271,7 @@ export function ReportsView() {
                   key={tab.id}
                   onClick={() => {
                     setActiveTab(tab.id)
-                    setReportData(null)
+                    clearReportData()
                   }}
                   className={`
                     whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors
@@ -279,7 +319,7 @@ export function ReportsView() {
           >
             {isLoading ? 'Generating...' : 'Generate Report'}
           </button>
-          {reportData && (
+          {hasData && (
             <button
               onClick={handleExportCSV}
               className="flex-1 md:flex-none px-4 py-2 border border-zinc-700 bg-zinc-800 text-white rounded-md hover:bg-zinc-700 font-medium transition-colors flex items-center justify-center gap-2"
@@ -300,22 +340,22 @@ export function ReportsView() {
       )}
 
       {/* Report Data Table */}
-      {reportData && (
+      {hasData && (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900 shadow-sm overflow-hidden">
-          {activeTab === 'financial' && reportData.netBalance !== undefined && (
+          {activeTab === 'financial' && financialData && financialData.netBalance !== undefined && (
             <div className="grid grid-cols-3 gap-4 p-6 border-b border-zinc-800 bg-zinc-950/50">
               <div>
                 <p className="text-sm font-medium text-zinc-500">Total Donations</p>
-                <p className="text-xl font-bold text-emerald-400">{reportData.totalDonations.toLocaleString()} BDT</p>
+                <p className="text-xl font-bold text-emerald-400">{financialData.totalDonations.toLocaleString()} BDT</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-zinc-500">Total Disbursements</p>
-                <p className="text-xl font-bold text-blue-400">{reportData.totalDisbursements.toLocaleString()} BDT</p>
+                <p className="text-xl font-bold text-blue-400">{financialData.totalDisbursements.toLocaleString()} BDT</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-zinc-500">Net Balance</p>
-                <p className={`text-xl font-bold ${reportData.netBalance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                  {reportData.netBalance.toLocaleString()} BDT
+                <p className={`text-xl font-bold ${financialData.netBalance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  {financialData.netBalance.toLocaleString()} BDT
                 </p>
               </div>
             </div>
@@ -331,8 +371,10 @@ export function ReportsView() {
               </tbody>
             </table>
             
-            {((activeTab === 'financial' && reportData.items?.length === 0) || 
-              (activeTab !== 'financial' && reportData.length === 0)) && (
+            {((activeTab === 'financial' && financialData?.items?.length === 0) || 
+              (activeTab === 'campaigns' && campaignsData?.length === 0) ||
+              (activeTab === 'beneficiaries' && beneficiariesData?.length === 0) ||
+              (activeTab === 'volunteers' && volunteersData?.length === 0)) && (
               <div className="p-8 text-center text-zinc-500">
                 No data found for the selected criteria.
               </div>
