@@ -5,11 +5,9 @@ import {
   deleteShiftAction,
   signUpAction,
   cancelSignUpAction,
-  markAttendanceAction,
 } from '@/lib/actions/volunteer.actions'
 import * as volunteerService from '@/lib/services/volunteer'
 import { getUserProfile } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
 
 // Mock next/cache
 vi.mock('next/cache', () => ({

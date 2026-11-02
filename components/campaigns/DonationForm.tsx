@@ -177,17 +177,19 @@ export function DonationForm({
       <div className="space-y-2">
         <label className="text-sm font-semibold text-zinc-200">Payment Channel</label>
         <div className="grid grid-cols-3 gap-2">
-          {[
-            { id: 'bkash', label: 'bKash / Nagad' },
-            { id: 'card', label: 'Debit / Card' },
-            { id: 'manual', label: 'Bank / Cash' },
-          ].map((method) => {
+          {(
+            [
+              { id: 'bkash', label: 'bKash / Nagad' },
+              { id: 'card', label: 'Debit / Card' },
+              { id: 'manual', label: 'Bank / Cash' },
+            ] as const
+          ).map((method) => {
             const isSelected = paymentMethod === method.id
             return (
               <button
                 key={method.id}
                 type="button"
-                onClick={() => setPaymentMethod(method.id as any)}
+                onClick={() => setPaymentMethod(method.id)}
                 disabled={isPending}
                 className={`py-2 px-2 text-xs font-semibold rounded-xl border text-center transition-all ${
                   isSelected

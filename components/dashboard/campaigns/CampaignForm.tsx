@@ -37,12 +37,29 @@ function SubmitButton({ isEdit }: { isEdit: boolean }) {
   )
 }
 
+interface CampaignFormState {
+  success?: boolean
+  error?: string | null
+  fieldErrors?: Record<string, string[]>
+  data?: Campaign | null
+  submittedData?: {
+    title?: string
+    description?: string
+    target_amount?: number
+    currency?: string
+    verification_text?: string | null
+    verification_link?: string | null
+    status?: Campaign['status']
+    deadline_at?: string | null
+  } | null
+}
+
 export function CampaignForm({ initialData }: CampaignFormProps) {
   const router = useRouter()
   const isEdit = !!initialData
 
   const action = isEdit
-    ? async (_prevState: unknown, formData: FormData) => {
+    ? async (_prevState: CampaignFormState | null, formData: FormData): Promise<CampaignFormState> => {
         const payload = {
           title: formData.get('title') as string,
           description: formData.get('description') as string,
@@ -56,7 +73,7 @@ export function CampaignForm({ initialData }: CampaignFormProps) {
         if (!res.success) return { ...res, submittedData: payload }
         return res
       }
-    : async (_prevState: unknown, formData: FormData) => {
+    : async (_prevState: CampaignFormState | null, formData: FormData): Promise<CampaignFormState> => {
         const payload = {
           title: formData.get('title') as string,
           description: formData.get('description') as string,
@@ -72,7 +89,7 @@ export function CampaignForm({ initialData }: CampaignFormProps) {
         return res
       }
 
-  const [state, formAction] = useActionState<any, FormData>(action, null)
+  const [state, formAction] = useActionState<CampaignFormState | null, FormData>(action, null)
 
   useEffect(() => {
     if (state?.success) {

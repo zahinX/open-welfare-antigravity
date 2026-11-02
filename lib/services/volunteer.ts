@@ -76,11 +76,16 @@ export async function getShifts(
       return { data: null, error: error.message }
     }
 
-    const shiftsWithSignups: VolunteerShiftWithSignups[] = (data || []).map((shift: any) => {
+    interface RawShiftWithSignupsList extends VolunteerShift {
+      volunteer_signups?: Array<{ id: string }> | null
+    }
+
+    const shiftsWithSignups: VolunteerShiftWithSignups[] = ((data || []) as unknown as RawShiftWithSignupsList[]).map((shift) => {
       const signups = shift.volunteer_signups || []
       const signup_count = Array.isArray(signups) ? signups.length : 0
       const spots_remaining = Math.max(0, Number(shift.max_volunteers) - signup_count)
-      const { volunteer_signups: _, ...shiftData } = shift
+      const shiftData = { ...shift }
+      delete shiftData.volunteer_signups
       return {
         ...shiftData,
         signup_count,
@@ -129,12 +134,30 @@ export async function getShiftById(
       return { data: null, error: error?.message || 'Volunteer shift not found' }
     }
 
-    const rawSignups = (data.volunteer_signups as any[]) || []
+    interface RawSignupWithProfileRow {
+      id: string
+      shift_id: string
+      user_id: string
+      attended: boolean | null
+      created_at: string
+      profiles?: {
+        full_name: string
+        phone: string | null
+        role: string
+      } | null
+    }
+
+    interface RawShiftDetailRow extends VolunteerShift {
+      volunteer_signups?: RawSignupWithProfileRow[] | null
+    }
+
+    const typedData = data as unknown as RawShiftDetailRow
+    const rawSignups = typedData.volunteer_signups || []
     const signups: VolunteerSignupWithProfile[] = rawSignups.map((s) => ({
       id: s.id,
       shift_id: s.shift_id,
       user_id: s.user_id,
-      attended: s.attended,
+      attended: s.attended ?? false,
       created_at: s.created_at,
       profile: s.profiles
         ? {
@@ -146,8 +169,9 @@ export async function getShiftById(
     }))
 
     const signup_count = signups.length
-    const spots_remaining = Math.max(0, Number(data.max_volunteers) - signup_count)
-    const { volunteer_signups: _, ...shiftData } = data
+    const spots_remaining = Math.max(0, Number(typedData.max_volunteers) - signup_count)
+    const shiftData = { ...typedData }
+    delete shiftData.volunteer_signups
 
     return {
       data: {
@@ -398,7 +422,11 @@ export async function getUserSignups(
       return { data: null, error: error.message }
     }
 
-    const signupsWithShifts: VolunteerSignupWithShift[] = (data || []).map((s: any) => ({
+    interface RawSignupWithShiftRow extends VolunteerSignup {
+      volunteer_shifts?: VolunteerShift | null
+    }
+
+    const signupsWithShifts: VolunteerSignupWithShift[] = ((data || []) as unknown as RawSignupWithShiftRow[]).map((s) => ({
       id: s.id,
       shift_id: s.shift_id,
       user_id: s.user_id,

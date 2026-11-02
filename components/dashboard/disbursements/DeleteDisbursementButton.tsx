@@ -27,6 +27,7 @@ export function DeleteDisbursementButton({ id, beneficiaryId }: DeleteDisburseme
       type="button"
       onClick={handleDelete}
       disabled={isPending}
+      aria-label="Delete disbursement"
       className="text-xs font-medium text-red-500 hover:text-red-400 disabled:opacity-50 transition-colors focus:outline-none"
     >
       {isPending ? 'Deleting...' : 'Delete'}

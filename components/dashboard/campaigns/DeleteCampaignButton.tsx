@@ -32,6 +32,7 @@ export function DeleteCampaignButton({ id, title }: DeleteCampaignButtonProps) {
       <button
         onClick={() => setShowConfirm(true)}
         disabled={isPending}
+        aria-label={`Delete campaign ${title}`}
         className="text-xs font-medium text-red-400 hover:text-red-300 disabled:opacity-50 transition-colors"
       >
         {isPending ? 'Deleting…' : 'Delete'}

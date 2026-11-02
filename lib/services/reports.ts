@@ -62,6 +62,63 @@ export interface VolunteerShiftReportItem {
   attendanceRate: number
 }
 
+interface RawDonationWithCampaign {
+  id: string
+  created_at: string
+  amount: number | string
+  converted_amount?: number | string | null
+  currency?: string | null
+  donor_name?: string | null
+  donor_name_override?: string | null
+  is_anonymous?: boolean | null
+  payment_method?: string | null
+  payment_status?: string | null
+  campaigns?: { title: string } | null
+}
+
+interface RawDisbursementWithRelations {
+  id: string
+  created_at: string
+  disbursed_at?: string | null
+  description?: string | null
+  amount_value: number | string
+  beneficiaries?: { full_name: string } | null
+  campaigns?: { title: string } | null
+}
+
+interface RawCampaignForReport {
+  id: string
+  title: string
+  status: string
+  currency?: string | null
+  target_amount: number | string
+  current_amount?: number | string | null
+  deadline_at?: string | null
+  created_at: string
+  donations?: Array<{ id: string; amount: number | string; converted_amount?: number | string | null }> | null
+  disbursements?: Array<{ id: string; amount_value: number | string }> | null
+}
+
+interface RawBeneficiaryForReport {
+  id: string
+  full_name: string
+  contact_phone?: string | null
+  family_size?: number | string | null
+  status: string
+  created_at: string
+  disbursements?: Array<{ id: string; amount_value: number | string }> | null
+}
+
+interface RawShiftForReport {
+  id: string
+  title: string
+  location: string
+  start_time: string
+  end_time: string
+  max_volunteers: number
+  volunteer_signups?: Array<{ id: string; attended?: boolean | null }> | null
+}
+
 /**
  * Fetch unified financial summary report (combining donations & disbursements).
  */
@@ -127,11 +184,11 @@ export async function getFinancialReport(
     if (donationsRes.error) throw new Error(donationsRes.error.message)
     if (disbursementsRes.error) throw new Error(disbursementsRes.error.message)
 
-    const donations = donationsRes.data || []
-    const disbursements = disbursementsRes.data || []
+    const donations = (donationsRes.data || []) as unknown as RawDonationWithCampaign[]
+    const disbursements = (disbursementsRes.data || []) as unknown as RawDisbursementWithRelations[]
 
     let totalDonations = 0
-    const donationItems: FinancialReportItem[] = donations.map((d: any) => {
+    const donationItems: FinancialReportItem[] = donations.map((d) => {
       const convAmt = Number(d.converted_amount) || Number(d.amount) || 0
       totalDonations += convAmt
 
@@ -154,7 +211,7 @@ export async function getFinancialReport(
     })
 
     let totalDisbursements = 0
-    const disbursementItems: FinancialReportItem[] = disbursements.map((disb: any) => {
+    const disbursementItems: FinancialReportItem[] = disbursements.map((disb) => {
       const amt = Number(disb.amount_value) || 0
       totalDisbursements += amt
 
@@ -230,7 +287,7 @@ export async function getCampaignPerformanceReport(
     }
 
     if (filter?.status) {
-      query = query.eq('status', filter.status as any)
+      query = query.eq('status', filter.status as 'draft' | 'active' | 'completed' | 'cancelled')
     }
 
     if (filter?.campaignId) {
@@ -240,14 +297,14 @@ export async function getCampaignPerformanceReport(
     const { data: campaigns, error } = await query
     if (error) throw new Error(error.message)
 
-    const list = campaigns || []
-    const report: CampaignPerformanceItem[] = list.map((c: any) => {
+    const list = (campaigns || []) as unknown as RawCampaignForReport[]
+    const report: CampaignPerformanceItem[] = list.map((c) => {
       const donations = c.donations || []
       const disbursements = c.disbursements || []
 
       const target = Number(c.target_amount) || 0
-      const raised = Number(c.current_amount) || donations.reduce((sum: number, d: any) => sum + (Number(d.converted_amount) || Number(d.amount) || 0), 0)
-      const disbursed = disbursements.reduce((sum: number, d: any) => sum + (Number(d.amount_value) || 0), 0)
+      const raised = Number(c.current_amount) || donations.reduce((sum: number, d) => sum + (Number(d.converted_amount) || Number(d.amount) || 0), 0)
+      const disbursed = disbursements.reduce((sum: number, d) => sum + (Number(d.amount_value) || 0), 0)
       const progress = target > 0 ? Math.min(Math.round((raised / target) * 100), 100) : 0
       const net = raised - disbursed
 
@@ -262,7 +319,7 @@ export async function getCampaignPerformanceReport(
         disbursedAmount: Math.round(disbursed * 100) / 100,
         netBalance: Math.round(net * 100) / 100,
         donorCount: donations.length,
-        deadlineAt: c.deadline_at,
+        deadlineAt: c.deadline_at || null,
         createdAt: c.created_at,
       }
     })
@@ -310,24 +367,24 @@ export async function getBeneficiaryReport(
     }
 
     if (filter?.status) {
-      query = query.eq('status', filter.status as any)
+      query = query.eq('status', filter.status as 'pending' | 'approved' | 'rejected' | 'inactive')
     }
 
     const { data: beneficiaries, error } = await query
     if (error) throw new Error(error.message)
 
-    const list = beneficiaries || []
-    const report: BeneficiaryReportItem[] = list.map((b: any) => {
+    const list = (beneficiaries || []) as unknown as RawBeneficiaryForReport[]
+    const report: BeneficiaryReportItem[] = list.map((b) => {
       const disbursements = b.disbursements || []
       const totalDisbursed = disbursements.reduce(
-        (sum: number, d: any) => sum + (Number(d.amount_value) || 0),
+        (sum: number, d) => sum + (Number(d.amount_value) || 0),
         0
       )
 
       return {
         id: b.id,
         fullName: b.full_name,
-        contactPhone: b.contact_phone,
+        contactPhone: b.contact_phone || null,
         familySize: Number(b.family_size) || 1,
         status: b.status,
         totalDisbursedAmount: Math.round(totalDisbursed * 100) / 100,
@@ -381,11 +438,11 @@ export async function getVolunteerReport(
     const { data: shifts, error } = await query
     if (error) throw new Error(error.message)
 
-    const list = shifts || []
-    const report: VolunteerShiftReportItem[] = list.map((s: any) => {
+    const list = (shifts || []) as unknown as RawShiftForReport[]
+    const report: VolunteerShiftReportItem[] = list.map((s) => {
       const signups = s.volunteer_signups || []
       const signupsCount = signups.length
-      const attendedCount = signups.filter((item: any) => item.attended).length
+      const attendedCount = signups.filter((item) => item.attended).length
       const attendanceRate = signupsCount > 0 ? Math.round((attendedCount / signupsCount) * 100) : 0
 
       return {

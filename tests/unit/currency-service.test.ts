@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import {
   getExchangeRate,
   convertCurrency,
-  USD_EXCHANGE_RATES,
 } from '@/lib/services/currency'
 
 describe('Currency Service (lib/services/currency.ts)', () => {

@@ -1,47 +1,27 @@
-# Phase 6 Decomposition Plan — Dashboard Analytics & Reporting
+# Phase 7 — Polish, Accessibility & Performance (Horizontal Plan)
 
-## Context & Scope
-This phase introduces analytical widgets to the admin dashboard and a suite of reporting pages. Since this phase primarily revolves around reading data (aggregations and charts) rather than complex state mutations, the entirety of Phase 6 can be handled in a single horizontal batch.
+## Batch Scope
+This batch covers the final phase of Open Welfare (Phase 7), focusing on ensuring the application is accessible (WCAG 2.1 AA), performant (Core Web Vitals), and ready for open source (Documentation & Licenses). The scope is well within the 70% context limit.
 
-## 1. Database & Backend Layer (Flash 3.7)
-**Goal:** Create read-only services and SQL functions/views for aggregating dashboard metrics and generating reports.
+## Horizontal Layer Decomposition
 
-- **Dashboard Metrics Service (`lib/services/analytics.ts`):**
-  - `getDashboardSummary()`: Returns total donations, active campaign count, total beneficiaries, and total volunteers.
-  - `getBeneficiaryDistribution()`: Returns aggregated counts of beneficiaries by family size or status.
-  - `getVolunteerParticipation()`: Returns aggregated volunteer attendance rates.
-- **Reporting Service (`lib/services/reports.ts`):**
-  - `getFinancialSummary(startDate, endDate)`: Aggregates donations over time.
-  - `getCampaignPerformance(startDate, endDate)`: Aggregates metrics per campaign.
-- **Exports:**
-  - Create utility functions to convert structured JSON data into CSV strings.
+### Layer 1: Core Build (Gemini Flash 3.7 High)
+*   **Performance Audits & Config**: Run initial accessibility and performance checks.
+*   **Config Optimization**: Set up Next.js bundle analyzer if needed, configure Next.js Image optimization settings in `next.config.mjs` or `next.config.ts`.
+*   **Dependencies**: Ensure any accessibility/performance testing plugins (e.g., `eslint-plugin-jsx-a11y`) are correctly configured in ESLint.
 
-## 2. API Layer (Flash 3.7)
-**Goal:** Create Server Actions or Route Handlers to expose the analytics data and CSV generation.
+### Layer 2: Core Review (Gemini 3.1 Pro High)
+*   **Audit Review**: Review the configuration changes, verify that the audit plan is sound.
+*   **Approval**: Hand off to UI Builder with explicit instructions on what ARIA/UI components need fixing.
 
-- **Analytics Actions (`lib/actions/analytics.actions.ts`):**
-  - Actions for date-filtered reports.
-- **Export Route Handlers (`app/api/export/route.ts`):**
-  - GET endpoints for downloading generated CSV files with appropriate headers (e.g., `text/csv`).
+### Layer 3: UI Build & Review (Claude Sonnet 4.6)
+*   **Accessibility (Step 7.1)**: Review and update all UI components for semantic HTML, ARIA labels, keyboard navigation, screen reader compatibility, and color contrast.
+*   **Performance (Step 7.2)**: Implement `next/image` for lazy loading, optimize fonts, implement code splitting via `next/dynamic` where heavy charts are used (e.g., Recharts in Phase 6 Dashboard).
 
-## 3. Test Layer (Flash 3.7)
-**Goal:** Validate the aggregations and exports.
+### Layer 4: Docs & Git (Gemini Flash 3.7 Medium)
+*   **Documentation (Step 7.3)**: Finalize `README.md` with setup instructions, create `CONTRIBUTING.md`, and add `LICENSE` (MIT).
+*   **Completion**: Finalize the phase, commit, push, open the Pull Request, and conclude the project.
 
-- **Unit Tests:**
-  - Test the analytics service functions against a seeded database state.
-  - Test CSV generator utility functions.
-- **Integration Tests:**
-  - Test Server Actions and Route Handlers for correct authentication and role validation.
-
-## 4. UI Layer (Claude 3.7 Sonnet)
-**Goal:** Build the visual dashboard widgets and the new reporting views.
-
-- **Admin Dashboard (`app/dashboard/page.tsx`):**
-  - Replace the placeholder dashboard with actual KPI cards (Total Donations, Active Campaigns, etc.).
-  - Integrate a charting library (e.g., Recharts) for the beneficiary distribution and volunteer participation graphs.
-- **Reporting Views (`app/dashboard/reports/page.tsx`):**
-  - Build date-range picker components.
-  - Display financial and campaign performance in sortable tables.
-  - Add "Export to CSV" buttons linked to the Route Handlers.
-- **Navigation:**
-  - Update `Sidebar.tsx` to include the new "Reports" navigation link.
+---
+**Status**: Plan Initialized.
+**Next Agent**: 📋 Plan Reviewer (Claude Opus 4.6)

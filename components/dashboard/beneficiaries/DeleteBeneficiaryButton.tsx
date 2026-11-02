@@ -27,6 +27,7 @@ export function DeleteBeneficiaryButton({ id, fullName }: DeleteBeneficiaryButto
       type="button"
       onClick={handleDelete}
       disabled={isPending}
+      aria-label={`Delete beneficiary ${fullName}`}
       className="text-xs font-medium text-red-500 hover:text-red-400 disabled:opacity-50 transition-colors focus:outline-none"
     >
       {isPending ? 'Deleting...' : 'Delete'}

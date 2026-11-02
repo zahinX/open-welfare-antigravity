@@ -14,20 +14,31 @@ import {
   Legend
 } from 'recharts'
 
-interface DashboardChartsProps {
-  type: 'beneficiary' | 'volunteer'
-  data: any
-  title: string
-  subtitle?: string
-}
+import type { ShiftParticipationStat } from '@/lib/services/analytics'
 
-export function DashboardCharts({ type, data, title, subtitle }: DashboardChartsProps) {
+export type DashboardChartsProps =
+  | {
+      type: 'beneficiary'
+      data: Record<string, number>
+      title: string
+      subtitle?: string
+    }
+  | {
+      type: 'volunteer'
+      data: ShiftParticipationStat[]
+      title: string
+      subtitle?: string
+    }
+
+export function DashboardCharts(props: DashboardChartsProps) {
+  const { type, title, subtitle } = props
   // Theme colors based on our design system
   const COLORS = ['#10b981', '#14b8a6', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6']
 
   const renderBeneficiaryChart = () => {
+    const beneficiaryData = props.type === 'beneficiary' ? props.data : {}
     // Format the record object into an array for Recharts
-    const chartData = Object.entries(data || {}).map(([name, value]) => ({
+    const chartData = Object.entries(beneficiaryData).map(([name, value]) => ({
       name: name.charAt(0).toUpperCase() + name.slice(1),
       value
     }))
@@ -60,10 +71,11 @@ export function DashboardCharts({ type, data, title, subtitle }: DashboardCharts
   }
 
   const renderVolunteerChart = () => {
+    const volunteerData = props.type === 'volunteer' ? props.data : []
     return (
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
-          data={data}
+          data={volunteerData}
           margin={{ top: 20, right: 30, left: -10, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
