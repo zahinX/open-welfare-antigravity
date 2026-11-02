@@ -84,24 +84,24 @@
 
 ---
 
-## Phase 4 — Beneficiary Management
+## Phase 4 — Beneficiary Management ✅
 
-### Step 4.1: Beneficiary Database Schema & API
-- [ ] Create `beneficiaries` table migration with RLS
-- [ ] Build server actions for CRUD operations
-- [ ] Add admin-only access controls
+### Step 4.1: Beneficiary Database Schema & API ✅
+- [x] Create `beneficiaries` table migration with RLS — *2026-08-18*
+- [x] Build server actions for CRUD operations — *2026-08-18*
+- [x] Add admin-only access controls — *2026-08-18*
 
-### Step 4.2: Beneficiary Admin UI
-- [ ] Build `/dashboard/beneficiaries` list page with filters
-- [ ] Build `/dashboard/beneficiaries/new` create form
-- [ ] Build `/dashboard/beneficiaries/[id]` detail/edit page
-- [ ] Add beneficiary status tracking (pending/approved/disbursed)
+### Step 4.2: Beneficiary Admin UI ✅
+- [x] Build `/dashboard/beneficiaries` list page with filters — *2026-08-18*
+- [x] Build `/dashboard/beneficiaries/new` create form — *2026-08-18*
+- [x] Build `/dashboard/beneficiaries/[id]/edit` detail/edit page — *2026-08-18*
+- [x] Add beneficiary status tracking (pending/approved/disbursed) — *2026-08-18*
 
-### Step 4.3: Disbursement Tracking
-- [ ] Create `disbursements` table migration with RLS
-- [ ] Build disbursement log UI
-- [ ] Link disbursements to campaigns and beneficiaries
-- [ ] Add reporting and export functionality
+### Step 4.3: Disbursement Tracking ✅
+- [x] Create `disbursements` table migration with RLS — *2026-08-18*
+- [x] Build disbursement log UI — *2026-08-18*
+- [x] Link disbursements to campaigns and beneficiaries — *2026-08-18*
+- [x] Add reporting and export functionality — *2026-08-18*
 
 ---
 

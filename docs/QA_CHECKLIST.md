@@ -145,8 +145,8 @@ This document contains structured manual testing plans and regression matrices f
   3. Submit and verify campaign creation succeeds.
   4. Edit the newly created campaign: verify that the base currency is locked/immutable with an explanatory note, but verification fields can be updated.
   5. Go to the public `/campaigns` page: verify the card renders the raised/target amount with the correct currency symbol (e.g. `$`).
-  6. Click into `/campaigns/[id]`: verify the dynamic verification text is displayed with a live pulse indicator, and the "View Verification Proof" link correctly opens the external URL in a new tab.
-  7. Check page aesthetics and verify high readability of small text and comfortable dark background (`bg-zinc-900`).
+  6. Click into `/campaigns/[id]`: verify the dynamic verification text is displayed with a live pulse indicator, and the "View Verification Proof" link correctly opens the external U  7. Check page aesthetics and verify high readability of small text and comfortable dark background (`bg-zinc-900`).
+
 ### Step 3.5: Donation Flow & Currency Conversion
 - **Automated Coverage:**
   - `tests/unit/currency-service.test.ts` (Cross-currency math, exchange rate lookups, fallback rates, and rounding)
@@ -171,4 +171,49 @@ This document contains structured manual testing plans and regression matrices f
   - `components/campaigns/DonationModal.tsx`, `DonationForm.tsx`, `DonationConfirmation.tsx`, `RecentSupportersList.tsx`
   - `app/(public)/campaigns/[id]/page.tsx`
 
+---
 
+## 📋 Phase 4: Beneficiary Management & Disbursement Tracking
+
+### Step 4.1: Beneficiary Database Schema & API
+- **Automated Coverage:**
+  - `tests/unit/beneficiary-service.test.ts` (CRUD operations, pagination, search queries, status filtering, and aggregations)
+  - `tests/unit/beneficiary-actions.test.ts` (Server Action auth enforcement, admin role guards, Zod validation errors, cache revalidation)
+- **Manual QA Script:**
+  1. Verify Supabase tables `beneficiaries` and `disbursements` exist with appropriate schema, foreign keys, and indexes.
+  2. Verify that non-admin authenticated users or public visitors cannot invoke create/update/delete actions directly.
+- **Impact Matrix (Regression Check):**
+  - `supabase/migrations/20260818000000_beneficiary_tweaks.sql`
+  - `lib/services/beneficiary.ts`
+  - `lib/actions/beneficiary.actions.ts`
+  - `lib/validations/beneficiary.ts`
+
+### Step 4.2: Beneficiary Admin UI
+- **Automated Coverage:** Build validation (`npm run build`) verifies `/dashboard/beneficiaries` and `/dashboard/beneficiaries/[id]/edit` static/dynamic compilation.
+- **Manual QA Script:**
+  1. Log in as an admin and navigate to `/dashboard/beneficiaries`.
+  2. Verify the list of registered beneficiaries is displayed with name, contact, family size, status badge, and action buttons.
+  3. Click "New Beneficiary" (`/dashboard/beneficiaries/new`), fill out the form, and submit.
+  4. Verify redirect to the beneficiaries list and verify the new entry is present.
+  5. Click "Edit", modify details, and verify updates persist.
+  6. Click "Delete", confirm browser alert, and ensure record is removed.
+- **Impact Matrix (Regression Check):**
+  - `app/dashboard/beneficiaries/**`
+  - `components/dashboard/beneficiaries/**`
+  - `components/dashboard/Sidebar.tsx`
+
+### Step 4.3: Disbursement Tracking
+- **Automated Coverage:**
+  - `tests/unit/disbursement-service.test.ts` (Disbursement creation, campaign linking, joined queries, and stats calculation)
+  - `tests/unit/disbursement-actions.test.ts` (Server Action admin authorization, input validation, and cache invalidation)
+- **Manual QA Script:**
+  1. Navigate to `/dashboard/disbursements`.
+  2. Click "Record Disbursement" (`/dashboard/disbursements/new`).
+  3. Select a beneficiary, optionally link to a campaign, enter amount, description, and submit.
+  4. Verify the disbursement appears in the disbursement log table with formatted currency and linked names.
+  5. Click "Edit" or "Delete" and confirm changes are accurately reflected.
+- **Impact Matrix (Regression Check):**
+  - `app/dashboard/disbursements/**`
+  - `components/dashboard/disbursements/**`
+  - `lib/services/disbursement.ts`
+  - `lib/actions/disbursement.actions.ts`
