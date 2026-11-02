@@ -1,0 +1,20 @@
+{
+  "status": "done",
+  "files": [
+    "app/dashboard/page.tsx",
+    "app/dashboard/reports/page.tsx",
+    "app/dashboard/reports/loading.tsx",
+    "app/dashboard/reports/error.tsx",
+    "components/dashboard/ReportsView.tsx",
+    "components/dashboard/DashboardCharts.tsx",
+    "components/dashboard/DashboardSummaryCards.tsx",
+    "components/dashboard/Sidebar.tsx"
+  ],
+  "routes": ["/dashboard", "/dashboard/reports"],
+  "nav_updated": true,
+  "client_components": [
+    "components/dashboard/ReportsView.tsx",
+    "components/dashboard/DashboardCharts.tsx",
+    "components/dashboard/Sidebar.tsx"
+  ]
+}

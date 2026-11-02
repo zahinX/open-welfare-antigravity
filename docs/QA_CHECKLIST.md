@@ -261,3 +261,34 @@ This document contains structured manual testing plans and regression matrices f
   - `app/(public)/volunteer/**`
   - `components/volunteer/**`
   - `app/(public)/layout.tsx`
+
+---
+
+## 📋 Phase 6: Dashboard Analytics & Reporting
+
+### Step 6.1: Admin Dashboard Widgets
+- **Automated Coverage:** Build validation (`npm run build`) verifies `/dashboard` static/dynamic compilation and server actions (`getDashboardSummaryAction`, `getBeneficiaryDistributionAction`, `getVolunteerParticipationAction`).
+- **Manual QA Script:**
+  1. Log in as an admin and navigate to `/dashboard`.
+  2. Verify the top KPI summary cards display total donations, active campaigns, beneficiaries, and volunteer shifts.
+  3. Verify the "Beneficiaries by Status" pie chart renders correctly.
+  4. Verify the "Recent Volunteer Shifts Attendance" bar chart renders correctly.
+- **Impact Matrix (Regression Check):**
+  - `app/dashboard/page.tsx`
+  - `components/dashboard/DashboardSummaryCards.tsx`
+  - `components/dashboard/DashboardCharts.tsx`
+  - `lib/services/analytics.ts`
+
+### Step 6.2: Reporting Pages
+- **Automated Coverage:** Build validation (`npm run build`) verifies `/dashboard/reports` static/dynamic compilation and server actions for generating financial and campaign reports. E2E tests for CSV export Route Handlers.
+- **Manual QA Script:**
+  1. Log in as an admin and navigate to `/dashboard/reports`.
+  2. Verify the default view shows the "Financial" report with a table of transactions and net balance.
+  3. Switch the tab to "Campaigns" and verify it renders the target, raised, and net balance for active campaigns.
+  4. Select a custom date range using the "From" and "To" date pickers and click "Filter". Verify the URL updates with `?startDate=...&endDate=...` and data correctly refreshes.
+  5. Click the "Export CSV" button and verify a file download is triggered with the appropriate `.csv` format corresponding to the selected tab.
+- **Impact Matrix (Regression Check):**
+  - `app/dashboard/reports/page.tsx`
+  - `components/dashboard/ReportsView.tsx`
+  - `lib/services/reports.ts`
+  - `app/api/export/reports/route.ts`

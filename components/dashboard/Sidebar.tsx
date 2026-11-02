@@ -1,4 +1,4 @@
-'use client'
+'use client' // Required for usePathname active state and mobile menu toggle
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -20,6 +20,7 @@ export function Sidebar({ role, fullName }: SidebarProps) {
     { name: 'Beneficiaries', href: '/dashboard/beneficiaries' },
     { name: 'Disbursements', href: '/dashboard/disbursements' },
     { name: 'Volunteer Shifts', href: '/dashboard/volunteers/shifts' },
+    { name: 'Reports & Analytics', href: '/dashboard/reports' },
   ]
 
   const publicLinks = [
