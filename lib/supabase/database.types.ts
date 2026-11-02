@@ -257,6 +257,7 @@ export type Database = {
           max_volunteers: number
           created_by: string
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
@@ -268,6 +269,7 @@ export type Database = {
           max_volunteers: number
           created_by: string
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
@@ -279,6 +281,7 @@ export type Database = {
           max_volunteers?: number
           created_by?: string
           created_at?: string
+          updated_at?: string
         }
         Relationships: [
           {
@@ -376,7 +379,9 @@ export type DisbursementUpdate = Database['public']['Tables']['disbursements']['
 // Convenience type aliases for volunteer_shifts
 export type VolunteerShift = Database['public']['Tables']['volunteer_shifts']['Row']
 export type VolunteerShiftInsert = Database['public']['Tables']['volunteer_shifts']['Insert']
+export type VolunteerShiftUpdate = Database['public']['Tables']['volunteer_shifts']['Update']
 
 // Convenience type aliases for volunteer_signups
 export type VolunteerSignup = Database['public']['Tables']['volunteer_signups']['Row']
 export type VolunteerSignupInsert = Database['public']['Tables']['volunteer_signups']['Insert']
+export type VolunteerSignupUpdate = Database['public']['Tables']['volunteer_signups']['Update']

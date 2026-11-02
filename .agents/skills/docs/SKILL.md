@@ -58,8 +58,10 @@ Closes roadmap step <X.Y>
 ### 5. Phase Completion & Pull Request Protocol
 If the completed step was the final step of a phase:
 - Commit all changes on the completed phase branch.
-- Open a Pull Request merging the completed phase branch to `main` (e.g. via `gh pr create`).
-- Checkout a new feature branch for the upcoming phase before handoff to the Orchestrator.
+- Open a Pull Request merging the completed phase branch to `main` via GitHub MCP server (`create_pull_request`).
+- Create and checkout a new feature branch for the upcoming phase before handoff to the Orchestrator.
+- Clean up numbered scratch files (`00-plan.md`, `01-*.json`) from `.agents/.handoff/`.
+- **DO NOT delete `.agents/.handoff/state.json`**: Update it with the new phase number, batch name, `current_layer: "planning"`, `next_agent: "orchestrator"`, and `recommended_next_model: "Gemini 3.1 Pro (High)"`.
 
 ## Output Format
 
