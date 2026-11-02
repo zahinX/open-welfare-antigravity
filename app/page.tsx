@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -42,9 +44,12 @@ export default function Home() {
             >
               About
             </a>
-            <button className="px-5 py-2.5 text-sm font-semibold text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-xl hover:from-emerald-300 hover:to-teal-300 transition-all duration-200 shadow-lg shadow-emerald-500/20 cursor-default">
-              Get Started
-            </button>
+            <Link href="/login" className="px-5 py-2.5 text-sm font-semibold text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-xl hover:from-emerald-300 hover:to-teal-300 transition-all duration-200 shadow-lg shadow-emerald-500/20">
+              Log In
+            </Link>
+            <Link href="/register" className="px-5 py-2.5 text-sm font-semibold text-white bg-emerald-900/50 border border-emerald-500/30 rounded-xl hover:bg-emerald-800/50 transition-all duration-200">
+              Sign Up
+            </Link>
           </div>
         </nav>
 
@@ -71,12 +76,12 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 mt-10">
-            <button className="px-8 py-3.5 text-base font-semibold text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl hover:from-emerald-300 hover:to-teal-300 transition-all duration-200 shadow-xl shadow-emerald-500/25 cursor-default">
+            <Link href="/login" className="px-8 py-3.5 text-base font-semibold text-emerald-950 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl hover:from-emerald-300 hover:to-teal-300 transition-all duration-200 shadow-xl shadow-emerald-500/25">
               Launch Dashboard
-            </button>
-            <button className="px-8 py-3.5 text-base font-semibold text-emerald-200 border border-emerald-500/30 rounded-2xl hover:bg-emerald-500/10 transition-all duration-200 cursor-default">
+            </Link>
+            <Link href="/campaigns" className="px-8 py-3.5 text-base font-semibold text-emerald-200 border border-emerald-500/30 rounded-2xl hover:bg-emerald-500/10 transition-all duration-200">
               View Campaigns
-            </button>
+            </Link>
           </div>
         </div>
       </header>

@@ -15,8 +15,8 @@ Our primary theme revolves around trust, growth, and community, utilizing Tailwi
 
 | Role | Light Mode (Default) | Dark Mode | Usage |
 |---|---|---|---|
-| **Background** | `bg-zinc-50` / `bg-white` | `bg-zinc-950` / `bg-zinc-900` | Page backgrounds, main containers |
-| **Foreground (Text)** | `text-zinc-900` / `text-zinc-600` | `text-zinc-50` / `text-zinc-400` | Headings, body copy |
+| **Background** | `bg-zinc-50` / `bg-white` | `bg-zinc-900` / `bg-zinc-800` | Page backgrounds, main containers |
+| **Foreground (Text)** | `text-zinc-900` / `text-zinc-600` | `text-zinc-100` / `text-zinc-200` / `text-zinc-300` | Headings, body copy, stats |
 | **Primary Brand** | `bg-emerald-600` | `bg-emerald-500` | Primary CTA buttons, active states, progress bars |
 | **Primary Hover** | `hover:bg-emerald-700` | `hover:bg-emerald-400` | Interactive primary elements |
 | **Secondary Brand** | `bg-teal-600` | `bg-teal-500` | Secondary highlights, charts |
@@ -61,6 +61,12 @@ Used for campaigns, beneficiaries, and dashboard widgets.
 ### 4. Badges / Tags
 Used for status indicators (e.g., Active, Draft, Completed).
 - **Active:** `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400`
+
+### 5. Modals & Dialogs
+Accessible overlay dialogs with backdrop blur for focused interactions (e.g., donations, confirmations, shift signups).
+- **Backdrop:** `fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200`
+- **Dialog Container:** `relative w-full max-w-lg rounded-2xl border border-zinc-700 bg-zinc-900 p-6 sm:p-7 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto`
+- **A11y Requirements:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and `Escape` key close handler.
 
 ---
 
